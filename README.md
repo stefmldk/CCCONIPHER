@@ -1,4 +1,4 @@
-# CONIPHER
+# CONIPHER fork
 
 ## CONIPHER mutation clustering and phylogenetic tree building R package
 This is a fork of the official CONIPHER repository that can be found at [https://github.com/McGranahanLab/CONIPHER](https://github.com/McGranahanLab/CONIPHER). The only changes that has been made to this version is the ability to provide custom cluster colors in the initial function call.

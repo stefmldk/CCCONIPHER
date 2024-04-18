@@ -9,16 +9,11 @@ For details on how to run mutation clustering and phylogenetic tree builing cons
 The current implementation of CONIPHER is written in `R>=3.6.1` and is distributed as an R package.
 
 ---
-## CONIPHER installation 
+## Installation 
 
 
 CONIPHER can be installed and run in multiple modes.
 
-1) To run mutation clustering + phylogenetic tree building, install the `conipher` conda environment from bioconda using the command below. This environment contains R version 4.1.3, the CONIPHER R package, PyClone v0.13.1 (which is required for mutation clustering), and all other dependencies.
-
-```
-conda create -n conipher -c conda-forge -c bioconda conipher
-```
 
 2) To run phylogenetic tree building only, the conda environment can also be used but is not strictly necessary. Alternatively, just the CONIPHER R package can be installed, provided the R package `devtools >= 2.4.1` is installed.
 

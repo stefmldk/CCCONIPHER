@@ -11,7 +11,7 @@ conipher_run <- function(case_id, prefix, out_dir, input_tsv_loc, ...) {
 
     # In case a run_conipher function that does not set custom_colors is used
     if(missing(custom_colors)){
-        custom_colors <- ()
+        custom_colors <- NULL
     }
     if (length(custom_colors)) {
         print('Running CONIPHER with custom colors...')

@@ -12,84 +12,46 @@ The current implementation of CONIPHER is written in `R>=3.6.1` and is distribut
 ## Installation 
 
 
-CONIPHER can be installed and run in multiple modes.
-
-
-2) To run phylogenetic tree building only, the conda environment can also be used but is not strictly necessary. Alternatively, just the CONIPHER R package can be installed, provided the R package `devtools >= 2.4.1` is installed.
-
-To install the CONIPHER R package from an R console, run the following command:
-
+The easiest way to ensure installation of all dependencies required by CONIPHER is to install it via a Conda package into a separate environment. Assuming you have mamba installed, run the command:
 ```
+mamba create -n conipher_c -c conda-forge -c bioconda conipher=2.2.0
+```
+Next, activate the created environment and start R by typing R followed by enter. Then, remove the original CONIPHER package and install the one from this repo:
+```
+remove.packages("CONIPHER")
 library(devtools)
-devtools::install_github("McGranahanLab/CONIPHER")
+devtools::install_github("stefmldk/CONIPHER_C")
 ```
+Exit out of R by running q() and choose n when asked to save the work environment.
+
+The environment is now ready to run CONIPHER_C with custom colors.
 
 ---
 ## Quick start
 
 ### Running clustering + tree building end-to-end 
-To get start quickly, you can install CONIPHER and perform mutation clustering and phylogenetic tree reconstruction on the example data provided using the following instructions.
 
-
-**Step 1.** 
-Install the `conipher` conda environment using the instructions above.
-
-**Step 2.**
-Start R and load the 'CONIPHER' and 'tidyverse' R packages using the following command:
+The edited files in this repo requires CONIPHER to be run via the run_conipher.R script found in the tools folder. Place the script in a folder of your choice and call it like this:
 ```
-library(CONIPHER)
-library(tidyverse)
+Rscript folder_of_your_choice/run_conipher.R \
+        --case_id the_case_id \
+        --prefix a_prefix \
+        --out_dir output_folder \
+        --input_tsv_loc conipher_input_tsv \
+        --nProcs number_of_threads \
+        --custom_colors ""
 ```
-
-**Step 3.**
-Specify a parent output directory where the clustering and tree building results will be saved in individual subfolders, for example using the following command:
+If the custom_colors argument is left out, the output should correspond to the original CONIPHER.
+Please format the input tsv as in the example below and only include nummeric chromosomes (exclude X, Y, M plus unassembled contigs):
 ```
-out_dir <- "conipher_results/"
+CASE_ID	SAMPLE	CHR	POS	REF	ALT	REF_COUNT	VAR_COUNT	DEPTH	COPY_NUMBER_A	COPY_NUMBER_B	ACF	PLOIDY
+G74E	G74E_4	1	9737534	C	A	27	0	27	2	0	0.57	3.8
+G74E	G74E_5	1	9737534	C	A	32	0	32	3	0	0.52	3.9
+G74E	G74E_6	1	9737534	C	A	24	0	24	2	0	0.56	3.8
+G74E	G74E_4	1	11531040	G	T	59	0	59	2	0	0.57	3.8
+G74E	G74E_5	1	11531040	G	T	79	0	79	3	0	0.52	3.9
+G74E	G74E_6	1	11531040	G	T	47	0	47	2	0	0.56	3.8
 ```
-
-**Step 4.**
-Specify the location of the input table .tsv file. For example, the file path of the toy input table provided in this package is specified using the following command:
-```
-input_tsv_loc <- system.file("extdata", "input_table.tsv", package = "CONIPHER", mustWork = TRUE)
-```
-
-**Step 5.**
-Run clustering + tree building end-to-end (interactively) using the following command:
-```
-conipher_run(case_id = "CRUKTOY001",
-             prefix = "CRUK",
-             out_dir = out_dir,
-             input_tsv_loc = input_tsv_loc)
-```
-
-### Running clustering only
-Run steps 1 - 4 as described in "Running clustering + tree building end-to-end" above. 
-
-**Step 5a.**
-Run clustering (interactively) using the following command:
-
-```
-conipher_clustering(case_id = "CRUKTOY001", 
-                    out_dir = out_dir, 
-                    input_tsv_loc = input_tsv_loc)
-```
-
-### Running tree building only
-Run steps 1 - 4 as described in "Running clustering + tree building end-to-end" above. 
-
-**Step 1b.** 
-Alternatively, instead of installing the `conipher` conda environment, install the CONIPHER R package only using the instructions described above.
-
-
-**Step 5b.**
-Run tree building (interactively) using the following command:
-
-```
-conipher_treebuilding(prefix = "CRUK",
-                      out_dir = out_dir,
-                      input_tsv_loc = tree_input_tsv_loc)
-```
-
 
 ---
 ### Anticipated results

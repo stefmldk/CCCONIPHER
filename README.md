@@ -3,8 +3,6 @@
 ## CONIPHER mutation clustering and phylogenetic tree building R package
 This is a fork of the official CONIPHER repository that can be found at [https://github.com/McGranahanLab/CONIPHER](https://github.com/McGranahanLab/CONIPHER). The only changes that has been made to this version is the ability to define custom cluster colors in the initial function call.
 
-For details on how to run mutation clustering and phylogenetic tree builing consecutively with one wrapper script from the command line, please refer to the github repository [CONIPHER-wrapper](https://github.com/McGranahanLab/CONIPHER-wrapper). For full details of all the inputs into CONIPHER clustering and tree building, refer to our protocol (https://doi.org/10.1038/s41596-023-00913-9).
-
 ### Software
 The current implementation of CONIPHER is written in `R>=3.6.1` and is distributed as an R package.
 
@@ -12,11 +10,11 @@ The current implementation of CONIPHER is written in `R>=3.6.1` and is distribut
 ## Installation 
 
 
-The easiest way to ensure installation of all dependencies required by CONIPHER is to install it via a Conda package into a separate environment. Assuming you have mamba installed, run the command:
+The easiest way to ensure installation of all dependencies is to install the original CONIPHER via Conda into a separate environment. Assuming you have mamba installed, run the command:
 ```
 mamba create -n conipher_c -c conda-forge -c bioconda conipher=2.2.0
 ```
-Next, activate the created environment and start R by typing R followed by enter. Then, remove the original CONIPHER package and install the one from this repo:
+Next, activate the created environment and start R by typing R and pressing enter. Then, remove the original CONIPHER package and install the one from this repo:
 ```
 remove.packages("CONIPHER")
 library(devtools)
@@ -39,9 +37,9 @@ Rscript folder_of_your_choice/run_conipher.R \
         --out_dir output_folder \
         --input_tsv_loc conipher_input_tsv \
         --nProcs number_of_threads \
-        --custom_colors ""
+        --custom_colors "#1f78b4,#b2df8a,#33a02c,#fb9a99,#e31a1c"
 ```
-If the custom_colors argument is left out, the output should correspond to the original CONIPHER.
+If the custom_colors argument is left out, the output should correspond to the original CONIPHER. Note: due to '#' having a special meaning i bash, the colors list must be in hyphens
 Please format the input tsv as in the example below and only include nummeric chromosomes (exclude X, Y, M plus unassembled contigs):
 ```
 CASE_ID	SAMPLE	CHR	POS	REF	ALT	REF_COUNT	VAR_COUNT	DEPTH	COPY_NUMBER_A	COPY_NUMBER_B	ACF	PLOIDY

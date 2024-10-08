@@ -10,7 +10,7 @@ conipher_run <- function(case_id, prefix, out_dir, input_tsv_loc, custom_colors,
     out_dir_tmp <- paste0(out_dir, "/Clustering/")
 
     if (length(custom_colors)) {
-        print('Running CONIPHER with custom colors...')
+        cat('\nRunning CONIPHER with custom colors...\n')
     }
 
     # Make custom_colors globally available since it is referenced in som other modules that will not get it via calls to conipher_clustering or conipher_treebuilding

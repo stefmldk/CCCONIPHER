@@ -886,6 +886,7 @@ treebuilding_plot <- function(sample_pyclone_tree) {
   main <- paste(substr(colnames(tmp)[1], 1, 8), '\ Phylo CCF values', sep = '')
   colnames(tmp) <- gsub(paste0(substr(colnames(tmp)[1], 1, 8), "_"), "", colnames(tmp))
   suppressPackageStartupMessages(require(gplots))
+  Sys.sleep(10)
   plot.new()
   par(mar = c(2, 2, 2, 2))
   title(main, cex = 2)
@@ -942,6 +943,7 @@ treebuilding_plot <- function(sample_pyclone_tree) {
     }
   }
 
+  Sys.sleep(10)
   plot.new()
   par(mar = c(2.1, 2.1, 4.1, 38), xpd = TRUE)
 

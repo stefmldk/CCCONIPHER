@@ -868,6 +868,7 @@ treebuilding_plot <- function(sample_pyclone_tree) {
   merged_clusters <- sample_pyclone_tree$merged_clusters
 
   ### Plot trees -- AUTOMATIC
+  cat('\nCreating the tree and bar plot...\n')
   date <- gsub('-', '', substr(Sys.time(), 1, 10))
 
   pdfname <- file.path(generalSave, 'pytree_and_bar.pdf')
@@ -886,7 +887,6 @@ treebuilding_plot <- function(sample_pyclone_tree) {
   main <- paste(substr(colnames(tmp)[1], 1, 8), '\ Phylo CCF values', sep = '')
   colnames(tmp) <- gsub(paste0(substr(colnames(tmp)[1], 1, 8), "_"), "", colnames(tmp))
   suppressPackageStartupMessages(require(gplots))
-  Sys.sleep(10)
   plot.new()
   par(mar = c(2, 2, 2, 2))
   title(main, cex = 2)
@@ -909,12 +909,12 @@ treebuilding_plot <- function(sample_pyclone_tree) {
     }
     if (j != 1)
       cat(paste0('\nj is ', toString(j), '\n'))
-      cat(paste0('\nUsing ', toString(colours.to.use[j]), '\n'))
-    {
-      border.col <- ifelse(clonality_table[j,] == 'clonal', 'black', 'grey')
-      bp <- barplot(nested_pyclone$ccf_cluster_table[j,], las = 1, col = colours.to.use[j], border = border.col, names = "", ylab = paste("Cl", rownames(nested_pyclone$ccf_cluster_table)[j], sep = " "), ylim = c(0, 115), yaxt = 'n', cex.axis = 1.25)
+    cat(paste0('\nUsing ', toString(colours.to.use[j]), '\n'))
+  {
+    border.col <- ifelse(clonality_table[j,] == 'clonal', 'black', 'grey')
+    bp <- barplot(nested_pyclone$ccf_cluster_table[j,], las = 1, col = colours.to.use[j], border = border.col, names = "", ylab = paste("Cl", rownames(nested_pyclone$ccf_cluster_table)[j], sep = " "), ylim = c(0, 115), yaxt = 'n', cex.axis = 1.25)
 
-    }
+  }
     axis(side = 2, at = c(0, 50, 100), labels = c(c(0, 50, 100)), las = 1)
     if (j == nrow(nested_pyclone$ccf_cluster_table))
     {
@@ -943,7 +943,6 @@ treebuilding_plot <- function(sample_pyclone_tree) {
     }
   }
 
-  Sys.sleep(10)
   plot.new()
   par(mar = c(2.1, 2.1, 4.1, 38), xpd = TRUE)
 
@@ -1043,23 +1042,28 @@ treebuilding_plot <- function(sample_pyclone_tree) {
   dev.off()
 
   #next, plot all the possible trees
+  cat('/Plotting alternative trees\n')
   trees.to.plot <- pyclone_tree$alt_trees
-  if (length(trees.to.plot) == 0)
+  nr.trees <- length(trees.to.plot)
+  if (nr.trees == 0)
   {
     #nothing to plot here.
   }
-  if (length(trees.to.plot) != 0)
+  if (nr.trees != 0)
   {
+    if (nr.trees > max_alt_trees) {
+      cat(paste0('\nThe number of alternative trees is ', toString(nr.trees), '. Limiting the number of trees in the plot to ', toString(max_alt_trees), '.\n'))
+      nr.trees <- max_alt_trees
+    }
 
     date <- gsub('-', '', substr(Sys.time(), 1, 10))
 
     pdfname <- file.path(generalSave, 'pytree_multipletrees.pdf')
 
-    mult.factor <- ceiling(length(trees.to.plot) / 50)
+    mult.factor <- ceiling(nr.trees / 50)
 
     pdf(pdfname, width = 12 * mult.factor, height = 12 * mult.factor)
   {
-    nr.trees <- length(trees.to.plot)
     columnnum <- 1
     rownum <- nr.trees / columnnum
 

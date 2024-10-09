@@ -68,7 +68,8 @@ option_list <- list(
                 help = "Minimum CCF to consider a mutation as present", metavar = "character"),
     make_option("--multi_trees", type = "logical", default = TRUE,
                 help = "Should alternative trees be explored", metavar = "character"),
-    make_option("--custom_colors", type = "character", default = NULL, help = "Colors to use instead of the default RColorBrewer colors", metavar = "character")
+    make_option("--custom_colors", type = "character", default = NULL, help = "Colors to use instead of the default RColorBrewer colors", metavar = "character"),
+    make_option("--max_alt_trees", type = "integer", default = 0, help = "Maximum number of alternative trees to plot. Disregarded if zero", metavar = "character")
 )
 
 
@@ -86,6 +87,7 @@ conipher_run(case_id = opt$case_id,
              out_dir = opt$out_dir,
              input_tsv_loc = opt$input_tsv_loc,
              custom_colors = colors,
+             max_alt_trees = opt$max_alt_trees,
              input_seg_tsv_loc = opt$input_seg_tsv_loc,
              subclonal_copy_correction = opt$subclonal_copy_correction,
              only_truncal_subclonal_copy_correction = opt$only_truncal_subclonal_copy_corection,

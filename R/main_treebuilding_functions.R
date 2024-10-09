@@ -894,20 +894,21 @@ treebuilding_plot <- function(sample_pyclone_tree) {
 
   par(mar = c(0.1, 5, 0.1, 2), lend = 1)
 
+  cat('\nUsing the colors:\n')
+  cat(paste0('\n', toString(colours.to.use), '\n'))
   for (j in 1:nrow(nested_pyclone$ccf_cluster_table))
   {
 
     if (j == 1)
     {
-      cat('\nj is 1 - using colors:\n')
-      cat(paste0('\n', toString(colours.to.use[j]), '\n'))
+      cat(paste0('\nj is 1, Using ', toString(colours.to.use[j]), '\n'))
       border.col <- ifelse(clonality_table[j,] == 'clonal', 'black', 'grey')
       bp <- barplot(nested_pyclone$ccf_cluster_table[j,], las = 1, col = colours.to.use[j], border = border.col, names = "", ylab = paste("Cl", rownames(nested_pyclone$ccf_cluster_table)[j], sep = " "), ylim = c(0, 115), yaxt = 'n', cex.axis = 1.25)
 
     }
     if (j != 1)
-      cat('\nj is not 1 - using colors:\n')
-      cat(paste0('\n', toString(colours.to.use[j]), '\n'))
+      cat(paste0('\nj is ', toString(j), '\n'))
+      cat(paste0('\nUsing ', toString(colours.to.use[j]), '\n'))
     {
       border.col <- ifelse(clonality_table[j,] == 'clonal', 'black', 'grey')
       bp <- barplot(nested_pyclone$ccf_cluster_table[j,], las = 1, col = colours.to.use[j], border = border.col, names = "", ylab = paste("Cl", rownames(nested_pyclone$ccf_cluster_table)[j], sep = " "), ylim = c(0, 115), yaxt = 'n', cex.axis = 1.25)

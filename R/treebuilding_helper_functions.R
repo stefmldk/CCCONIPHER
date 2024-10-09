@@ -2862,8 +2862,8 @@ color.tree <- function(edgelength, opacity = 255)
   ncols <- length(edgelength)
 
   if (length(custom_colors)) {
-    max.cols = length(custom_colors)
-    cols = custom_colors
+    max.cols <- length(custom_colors)
+    cols <- custom_colors
   }
   else {
     max.cols <- 12
@@ -2871,9 +2871,9 @@ color.tree <- function(edgelength, opacity = 255)
     cols <- rep(cols, ceiling(ncols / max.cols))[1:ncols]
   }
 
-  #Make colors with more than 12 clusters more transparent
+  #Make colors with more than max.cols clusters more transparent
   nopaq <- round(opacity / ceiling(ncols / max.cols))
-  opacity_val <- c(sapply(1:ceiling(ncols / max.cols), function(x) rep(opacity - nopaq * (x - 1), 12)))[1:ncols]
+  opacity_val <- c(sapply(1:ceiling(ncols / max.cols), function(x) rep(opacity - nopaq * (x - 1), max.cols)))[1:ncols]
   cols.opac <- paste(cols, as.hexmode(opacity_val), sep = "")
   return(cols.opac)
 }

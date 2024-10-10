@@ -2492,8 +2492,7 @@ plot.pyclone.clusters <- function(patient
   {
 
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(mostLikelyClusters))
-
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -2502,9 +2501,8 @@ plot.pyclone.clusters <- function(patient
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
 
@@ -2669,8 +2667,7 @@ plot.pyclone.clusters <- function(patient
   if (ccf == 'sanger')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(mostLikelyClusters))
-
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -2679,9 +2676,8 @@ plot.pyclone.clusters <- function(patient
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
 
@@ -2825,8 +2821,7 @@ plot.pyclone.clusters <- function(patient
   if (ccf == 'phylo')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(mostLikelyClusters))
-
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -2835,9 +2830,8 @@ plot.pyclone.clusters <- function(patient
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
     if (!is.na(colour.choice))
@@ -3027,8 +3021,7 @@ plot.pycloneMutCpn.clusters <- function(patient
   {
 
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(mostLikelyClusters))
-
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3037,9 +3030,8 @@ plot.pycloneMutCpn.clusters <- function(patient
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
 
@@ -3202,8 +3194,7 @@ plot.pycloneMutCpn.clusters <- function(patient
   if (ccf == 'sanger')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(mostLikelyClusters))
-
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3212,9 +3203,8 @@ plot.pycloneMutCpn.clusters <- function(patient
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
 
@@ -3358,8 +3348,7 @@ plot.pycloneMutCpn.clusters <- function(patient
   if (ccf == 'phylo')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(mostLikelyClusters))
-
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3368,9 +3357,8 @@ plot.pycloneMutCpn.clusters <- function(patient
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
     if (!is.na(colour.choice))
@@ -3553,8 +3541,8 @@ plot.region.mutCopyNum <- function(phylo.region.list
       mtext(unlist(strsplit(region, split = "_"))[length(unlist(strsplit(region, split = "_")))], side = 2, cex = 0.6, line = 2, las = 2)
       #its hard to distinguish more than 8 different colours
     }
-    no.optima = length(unique(mostLikelyClusters))
 
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3563,9 +3551,8 @@ plot.region.mutCopyNum <- function(phylo.region.list
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
 
@@ -3642,8 +3629,8 @@ plot.region.mutCopyNum <- function(phylo.region.list
       )
       mtext(unlist(strsplit(region, split = "_"))[length(unlist(strsplit(region, split = "_")))], side = 2, cex = 0.6, line = 2, las = 2)
     }
-    no.optima = length(unique(mostLikelyClusters))
 
+    no.optima = length(unique(most.likely.cluster))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3652,9 +3639,8 @@ plot.region.mutCopyNum <- function(phylo.region.list
       max.cols = 12
       # require(RColorBrewer)
       cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-      cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     }
-
+    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
     cols.opac = paste(cols, '99', sep = "")
 
 
@@ -3892,8 +3878,8 @@ plot.simpleClusters.raw <- function(seg.mat.patient
     max.cols = 12
     # require(RColorBrewer)
     cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
   }
+  cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
 
   cols.opac = paste(cols, '99', sep = "")
 

@@ -2858,7 +2858,6 @@ trx_rename.fn <- function(trxid, trialID = 'LTX')
 #' @importFrom RColorBrewer "brewer.pal"
 color.tree <- function(edgelength, opacity = 255)
 {
-  suppressPackageStartupMessages(require(RColorBrewer))
   ncols <- length(edgelength)
 
   if (length(custom_colors)) {
@@ -2866,11 +2865,12 @@ color.tree <- function(edgelength, opacity = 255)
     cols <- custom_colors
   }
   else {
+    suppressPackageStartupMessages(require(RColorBrewer))
     max.cols <- 12
     cols <- paste(brewer.pal(min(max.cols, ncols), name = "Paired"), sep = "")
-    cols <- rep(cols, ceiling(ncols / max.cols))[1:ncols]
   }
-
+  cols <- rep(cols, ceiling(ncols / max.cols))[1:ncols]
+  
   #Make colors with more than max.cols clusters more transparent
   nopaq <- round(opacity / ceiling(ncols / max.cols))
   opacity_val <- c(sapply(1:ceiling(ncols / max.cols), function(x) rep(opacity - nopaq * (x - 1), max.cols)))[1:ncols]

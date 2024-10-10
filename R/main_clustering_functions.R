@@ -791,18 +791,16 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
   }
 
   no.optima = length(unique(most.likely.cluster))
-
   if (length(custom_colors)) {
-      max.cols = length(custom_colors)
-      cols = custom_colors
-    }
-    else {
-      max.cols = 12
+    max.cols = length(custom_colors)
+    cols = custom_colors
+  }
+  else {
+    max.cols = 12
     # require(RColorBrewer)
     cols = paste(RColorBrewer::brewer.pal(min(max.cols, no.optima), name = "Paired"), sep = "")
-    cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
-    }
-
+  }
+  cols = rep(cols, ceiling(no.optima / max.cols))[1:no.optima]
   cols.opac = paste(cols, '99', sep = "")
 
   clean.most.likely.clusters <- most.likely.cluster[most.likely.cluster %in% c(1:solid.cluster.end)]

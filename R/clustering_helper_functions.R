@@ -2492,7 +2492,7 @@ plot.pyclone.clusters <- function(patient
   {
 
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -2667,7 +2667,7 @@ plot.pyclone.clusters <- function(patient
   if (ccf == 'sanger')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -2821,7 +2821,7 @@ plot.pyclone.clusters <- function(patient
   if (ccf == 'phylo')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3021,7 +3021,7 @@ plot.pycloneMutCpn.clusters <- function(patient
   {
 
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3194,7 +3194,7 @@ plot.pycloneMutCpn.clusters <- function(patient
   if (ccf == 'sanger')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3348,7 +3348,7 @@ plot.pycloneMutCpn.clusters <- function(patient
   if (ccf == 'phylo')
   {
     #its hard to distinguish more than 8 different colours
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3542,7 +3542,7 @@ plot.region.mutCopyNum <- function(phylo.region.list
       #its hard to distinguish more than 8 different colours
     }
 
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors
@@ -3630,7 +3630,7 @@ plot.region.mutCopyNum <- function(phylo.region.list
       mtext(unlist(strsplit(region, split = "_"))[length(unlist(strsplit(region, split = "_")))], side = 2, cex = 0.6, line = 2, las = 2)
     }
 
-    no.optima = length(unique(most.likely.cluster))
+    no.optima = length(unique(mostLikelyClusters))
     if (length(custom_colors)) {
       max.cols = length(custom_colors)
       cols = custom_colors

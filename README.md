@@ -12,13 +12,13 @@ The current implementation of CONIPHER is written in `R>=3.6.1` and is distribut
 
 The easiest way to ensure installation of all dependencies is to install the original CONIPHER via Conda into a separate environment. Assuming you have mamba installed, run the command:
 ```
-mamba create -n conipher_c -c conda-forge -c bioconda conipher=2.2.0
+mamba create -n ccconipher -c conda-forge -c bioconda conipher=2.2.0
 ```
 Next, activate the created environment and start R by typing R and pressing enter. Then, remove the original CONIPHER package and install the one from this repo:
 ```
 remove.packages("CONIPHER")
 library(devtools)
-devtools::install_github("stefmldk/CONIPHER_C")
+devtools::install_github("stefmldk/CCCONIPHER")
 ```
 Skip updates by pressing enter when prompted.
 Exit out of R by running q() and choose n when asked to save the workspace image.

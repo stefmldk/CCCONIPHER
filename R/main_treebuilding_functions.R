@@ -24,69 +24,69 @@ conipher_treebuilding <- function(input_tsv_loc,
                                   min_cluster_size = 5,
                                   multi_trees = TRUE,
                                   ...) {
-    out_dir         <- paste0(out_dir, "/")
+  out_dir <- paste0(out_dir, "/")
 
-    # cat("\nCONIPHER tree building analysis of the following tumour case:\n")
-    # print(patient)
-    # cat("\n")
+  # cat("\nCONIPHER tree building analysis of the following tumour case:\n")
+  # print(patient)
+  # cat("\n")
 
-    if (!file.exists(out_dir)) {
-        if (!dir.create(out_dir, recursive = TRUE)) {
-            stop("Unable to create root directory.\n")
-        }
+  if (!file.exists(out_dir)) {
+    if (!dir.create(out_dir, recursive = TRUE)) {
+      stop("Unable to create root directory.\n")
     }
+  }
 
-    if(!file.exists(input_tsv_loc)) {
-        stop("Unable to find input_tsv.\n")
-    }
-    input_tsv     <- read.delim(input_tsv_loc, sep = "\t", stringsAsFactors = FALSE, header = TRUE, fill = TRUE, quote = "")
-    if (nrow(input_tsv) == 0) {
-        stop('No mutations passed filtering, stopping PyClone phylo clustering')
-    }
-    #### =========== PREOCESS INPUT DATA ========= ####
+  if (!file.exists(input_tsv_loc)) {
+    stop("Unable to find input_tsv.\n")
+  }
+  input_tsv <- read.delim(input_tsv_loc, sep = "\t", stringsAsFactors = FALSE, header = TRUE, fill = TRUE, quote = "")
+  if (nrow(input_tsv) == 0) {
+    stop('No mutations passed filtering, stopping PyClone phylo clustering')
+  }
+  #### =========== PREOCESS INPUT DATA ========= ####
 
-    # preprocess input data into correct form for tree building
-    input_list <- treebuilding_preprocess(input_tsv, prefix, out_dir)
+  # preprocess input data into correct form for tree building
+  input_list <- treebuilding_preprocess(input_tsv, prefix, out_dir)
 
-    #### =========== RUN TREE BUILDING ========= ####
+  #### =========== RUN TREE BUILDING ========= ####
 
-    # run main CONIPHER tree building function
-    sample_pyclone_tree <-      treebuilding_run(sample_input_list = input_list
-                                                      , ccf_buffer = ccf_buffer
-                                                      , pval_cutoff = pval_cutoff
-                                                      , use_boot = use_boot
-                                                      , merge_clusters = merge_clusters
-                                                      , correct_cpn_clusters = correct_cpn_clusters
-                                                      , adjust_noisy_clusters = adjust_noisy_clusters
-                                                      , adjust_noisy_clusters_prop = adjust_noisy_clusters_prop
-                                                      , min_ccf = min_ccf
-                                                      , min_cluster_size = min_cluster_size
-                                                      , run.multi.trees = multi_trees
-    )
+  # run main CONIPHER tree building function
+  sample_pyclone_tree <- treebuilding_run(sample_input_list = input_list
+    , ccf_buffer = ccf_buffer
+    , pval_cutoff = pval_cutoff
+    , use_boot = use_boot
+    , merge_clusters = merge_clusters
+    , correct_cpn_clusters = correct_cpn_clusters
+    , adjust_noisy_clusters = adjust_noisy_clusters
+    , adjust_noisy_clusters_prop = adjust_noisy_clusters_prop
+    , min_ccf = min_ccf
+    , min_cluster_size = min_cluster_size
+    , run.multi.trees = multi_trees
+  )
 
-    #### =========== SAVE OUTPUT ========= ####
+  #### =========== SAVE OUTPUT ========= ####
 
-    # Save all tree building output
-    if(!is.na(sample_pyclone_tree$graph_pyclone[1]))
-      cat('\nSaving all treebuilding output\n')
-    {
-      ### Plotting tree
-      treebuilding_plot(sample_pyclone_tree)
+  # Save all tree building output
+  if (!is.na(sample_pyclone_tree$graph_pyclone[1]))
+    cat('\nSaving all treebuilding output\n')
+{
+  ### Plotting tree
+  treebuilding_plot(sample_pyclone_tree)
 
-      ### Creating human readable format
-      ### writing all trees
-      treeFile <- paste0(sample_pyclone_tree$parameters$generalSave, "allTrees.txt")
-      if ("alt_trees" %in% names(sample_pyclone_tree$graph_pyclone)) {
-        write.table(paste0("### ", length(sample_pyclone_tree$graph_pyclone$alt_trees), " trees"), file = treeFile, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
-        tmp <- sapply(seq(1, length(sample_pyclone_tree$graph_pyclone$alt_trees)), function(x) {
-            write.table(paste0("# tree ", x), file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
-            write.table(sample_pyclone_tree$graph_pyclone$alt_trees[[x]], file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
-        })
-      } else {
-        write.table(paste0("### ", 1, " trees"), file = treeFile, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
-        write.table(paste0("# tree ", 1), file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
-        write.table(sample_pyclone_tree$graph_pyclone$default_tree, file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
-      }
+  ### Creating human readable format
+  ### writing all trees
+  treeFile <- paste0(sample_pyclone_tree$parameters$generalSave, "allTrees.txt")
+  if ("alt_trees" %in% names(sample_pyclone_tree$graph_pyclone)) {
+    write.table(paste0("### ", length(sample_pyclone_tree$graph_pyclone$alt_trees), " trees"), file = treeFile, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
+    tmp <- sapply(seq(1, length(sample_pyclone_tree$graph_pyclone$alt_trees)), function(x) {
+      write.table(paste0("# tree ", x), file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
+      write.table(sample_pyclone_tree$graph_pyclone$alt_trees[[x]], file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
+    })
+  } else {
+    write.table(paste0("### ", 1, " trees"), file = treeFile, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
+    write.table(paste0("# tree ", 1), file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
+    write.table(sample_pyclone_tree$graph_pyclone$default_tree, file = treeFile, append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
+  }
 
       ### writing consensus branches
       consensusBranchesFile <- paste0(sample_pyclone_tree$parameters$generalSave, "consensusBranches.txt")
@@ -96,14 +96,14 @@ conipher_treebuilding <- function(input_tsv_loc,
       consensusRelationshipsFile <- paste0(sample_pyclone_tree$parameters$generalSave, "consensusRelationships.txt")
       write.table(Reduce(rbind, strsplit(sample_pyclone_tree$graph_pyclone$consensus_relationships, split = ":")), file = consensusRelationshipsFile, row.names = FALSE, col.names = FALSE, quote = FALSE, sep = "\t")
 
-      ### writing cluster information
-      clusterInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "clusterInfo.txt")
+  ### writing cluster information
+  clusterInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "clusterInfo.txt")
 
-      clusterInfoDF <- data.frame(clusterID = names(sample_pyclone_tree$graph_pyclone$edgelength), stringsAsFactors = FALSE)
-      clusterInfoDF$truncal <- ifelse(clusterInfoDF$clusterID %in% sample_pyclone_tree$graph_pyclone$trunk, TRUE, FALSE)
-      clusterInfoDF$treeClust <- ifelse(clusterInfoDF$clusterID %in% unique(c(sample_pyclone_tree$graph_pyclone$default_tree)), TRUE, FALSE)
-      clusterInfoDF$cpnRemClust <- ifelse(clusterInfoDF$clusterID %in% sample_pyclone_tree$cpn_removed_clusters, TRUE, FALSE)
-      clusterInfoDF$nMuts <- as.numeric(sample_pyclone_tree$graph_pyclone$edgelength)
+  clusterInfoDF <- data.frame(clusterID = names(sample_pyclone_tree$graph_pyclone$edgelength), stringsAsFactors = FALSE)
+  clusterInfoDF$truncal <- ifelse(clusterInfoDF$clusterID %in% sample_pyclone_tree$graph_pyclone$trunk, TRUE, FALSE)
+  clusterInfoDF$treeClust <- ifelse(clusterInfoDF$clusterID %in% unique(c(sample_pyclone_tree$graph_pyclone$default_tree)), TRUE, FALSE)
+  clusterInfoDF$cpnRemClust <- ifelse(clusterInfoDF$clusterID %in% sample_pyclone_tree$cpn_removed_clusters, TRUE, FALSE)
+  clusterInfoDF$nMuts <- as.numeric(sample_pyclone_tree$graph_pyclone$edgelength)
 
       clusterInfoDF <- clusterInfoDF %>% dplyr::full_join(data.frame(sample_pyclone_tree$nested_pyclone$ccf_cluster_table, stringsAsFactors = FALSE) %>% dplyr::mutate(clusterID = rownames(.)) %>% tidyr::pivot_longer(!clusterID, names_to = "Region", values_to = "meanCCF"), by = c("clusterID"))
       clusterInfoDF <- clusterInfoDF %>% dplyr::full_join(data.frame(sample_pyclone_tree$nested_pyclone$ccf_ci_lower, stringsAsFactors = FALSE) %>% dplyr::mutate(clusterID = rownames(.)) %>% tidyr::pivot_longer(!clusterID, names_to = "Region", values_to = "CCF_CI_low"), by = c("clusterID", "Region"))
@@ -111,11 +111,11 @@ conipher_treebuilding <- function(input_tsv_loc,
       clusterInfoDF <- clusterInfoDF %>% dplyr::full_join(data.frame(sample_pyclone_tree$clonality_out$clonality_table_corrected, stringsAsFactors = FALSE) %>% dplyr::mutate(clusterID = rownames(.)) %>% tidyr::pivot_longer(!clusterID, names_to = "Region", values_to = "clonality"), by = c("clusterID", "Region"))
       clusterInfoDF <- clusterInfoDF %>% dplyr::full_join(data.frame(sample_pyclone_tree$clone_proportion_out$clone_proportion_table, stringsAsFactors = FALSE) %>% dplyr::mutate(clusterID = rownames(.)) %>% tidyr::pivot_longer(!clusterID, names_to = "Region", values_to = "clone_proportions_default"), by = c("clusterID", "Region"))
 
-      clusterInfoDF <- clusterInfoDF %>% dplyr::rename(SAMPLE = Region)
-      write.table(clusterInfoDF, file = clusterInfoFile, row.names = FALSE, quote = FALSE, sep = "\t")
+  clusterInfoDF <- clusterInfoDF %>% dplyr::rename(SAMPLE = Region)
+  write.table(clusterInfoDF, file = clusterInfoFile, row.names = FALSE, quote = FALSE, sep = "\t")
 
-      ### writing clone proportion information
-      cloneproportionInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "cloneProportionsMinErrorTrees.txt")
+  ### writing clone proportion information
+  cloneproportionInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "cloneProportionsMinErrorTrees.txt")
 
       cp_min_sce_trees <- sample_pyclone_tree$clone_proportion_out$clone_proportions_min_sce_trees
       cloneproportionInfoList <- lapply(seq(cp_min_sce_trees), function(i){
@@ -128,8 +128,8 @@ conipher_treebuilding <- function(input_tsv_loc,
       cloneproportionInfoDF <- do.call(rbind, cloneproportionInfoList)
       write.table(cloneproportionInfoDF, file = cloneproportionInfoFile, row.names = FALSE, quote = FALSE, sep = "\t")
 
-      ### writing subclonal expansion score data
-      subcloneExpansionInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "subclonalExpansionScoreMinErrorTrees.txt")
+  ### writing subclonal expansion score data
+  subcloneExpansionInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "subclonalExpansionScoreMinErrorTrees.txt")
 
       ses_min_sce_trees <- sample_pyclone_tree$subclonal_expansion_score_out$subclonal_exp_score_min_sce_trees
       subcloneExpansionInfoList <- lapply(seq(ses_min_sce_trees), function(i){
@@ -141,22 +141,22 @@ conipher_treebuilding <- function(input_tsv_loc,
       subcloneExpansionInfoDF <- do.call(rbind, subcloneExpansionInfoList)
       write.table(subcloneExpansionInfoDF, file = subcloneExpansionInfoFile, row.names = FALSE, quote = FALSE, sep = "\t")
 
-      ### writing output muttable - similar to input
-      input_tsv <- input_tsv %>% dplyr::rename(originalCLUSTER = CLUSTER)
-      if (is.null(nrow(sample_pyclone_tree$merge_clusters))) {
-        input_tsv <- input_tsv %>% dplyr::mutate(treeCLUSTER = originalCLUSTER)
-      } else {
-        input_tsv <- input_tsv %>% dplyr::mutate(treeCLUSTER = originalCLUSTER)
-        for (i in 1:nrow(sample_pyclone_tree$merged_clusters)) {
-          input_tsv$treeCLUSTER <- gsub(sample_pyclone_tree$merged_clusters[i, 1], sample_pyclone_tree$merged_clusters[i, 3], input_tsv$treeCLUSTER)
-        }
-      }
-      write.table(input_tsv, file = paste0(sample_pyclone_tree$parameters$generalSave, "treeTable.tsv"), row.names = FALSE, quote = FALSE, sep = "\t")
+  ### writing output muttable - similar to input
+  input_tsv <- input_tsv %>% dplyr::rename(originalCLUSTER = CLUSTER)
+  if (is.null(nrow(sample_pyclone_tree$merge_clusters))) {
+    input_tsv <- input_tsv %>% dplyr::mutate(treeCLUSTER = originalCLUSTER)
+  } else {
+    input_tsv <- input_tsv %>% dplyr::mutate(treeCLUSTER = originalCLUSTER)
+    for (i in 1:nrow(sample_pyclone_tree$merged_clusters)) {
+      input_tsv$treeCLUSTER <- gsub(sample_pyclone_tree$merged_clusters[i, 1], sample_pyclone_tree$merged_clusters[i, 3], input_tsv$treeCLUSTER)
+    }
+  }
+  write.table(input_tsv, file = paste0(sample_pyclone_tree$parameters$generalSave, "treeTable.tsv"), row.names = FALSE, quote = FALSE, sep = "\t")
 
-      ### writing alternative trees summary metrics
-      altTreeInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "alternativeTreeMetrics.txt")
+  ### writing alternative trees summary metrics
+  altTreeInfoFile <- paste0(sample_pyclone_tree$parameters$generalSave, "alternativeTreeMetrics.txt")
 
-      altTreeInfoDF <- data.frame(treeID = seq(sample_pyclone_tree$graph_pyclone$alt_trees), stringsAsFactors = FALSE)
+  altTreeInfoDF <- data.frame(treeID = seq(sample_pyclone_tree$graph_pyclone$alt_trees), stringsAsFactors = FALSE)
 
       altTreeInfoDF$sum_condition_error <- sapply(altTreeInfoDF$treeID, function(i) sample_pyclone_tree$graph_pyclone$alt_trees_sum_condition_error[i])
       altTreeInfoDF$SCE_ranking <- match(altTreeInfoDF$sum_condition_error, sort(unique(altTreeInfoDF$sum_condition_error)))
@@ -167,7 +167,7 @@ conipher_treebuilding <- function(input_tsv_loc,
       altTreeInfoDF$highest_edge_probability <- ifelse(altTreeInfoDF$edge_probability_score == max(altTreeInfoDF$edge_probability_score), 'Highest edge probability tree', 'Alternative tree')
       write.table(altTreeInfoDF, file = altTreeInfoFile, row.names = FALSE, quote = FALSE, sep = "\t")
 
-    }
+}
 }
 
 
@@ -187,7 +187,7 @@ treebuilding_preprocess <- function(input_table, prefix, out_dir) {
   cat('\n Preprocessing input data \n')
   # check if the correct columns are included
   required_cols <- c("CASE_ID", "SAMPLE", "CHR", "POS", "REF", "ALT", "CLUSTER", "CCF_PHYLO", "CCF_OBS", "MUT_COPY", "COPY_NUMBER_A", "COPY_NUMBER_B")
-  if (FALSE%in% (required_cols %in% colnames(input_table)))
+  if (FALSE %in% (required_cols %in% colnames(input_table)))
   {
     print('\nThe following columns are required in input_tsv:\n')
     cat(required_cols)
@@ -200,16 +200,16 @@ treebuilding_preprocess <- function(input_table, prefix, out_dir) {
                                    input_table$POS,
                                    input_table$REF,
                                    input_table$ALT,
-                                   sep=":")
+                                   sep = ":")
 
-  nr_unique_muts           <- length(unique(input_table$mutation_id))
-  nr_regions               <- length(unique(input_table$SAMPLE))
-  regions                  <- unique(input_table$SAMPLE)
+  nr_unique_muts <- length(unique(input_table$mutation_id))
+  nr_regions <- length(unique(input_table$SAMPLE))
+  regions <- unique(input_table$SAMPLE)
 
   # Raise an error if prefix is not specified, or incorrectly specified
-  if (is.null(prefix)){
+  if (is.null(prefix)) {
     stop("No prefix specified. Please indicate a prefix for the current tumour case.")
-  } else if (!grepl(prefix, input_table$CASE_ID[1])){
+  } else if (!grepl(prefix, input_table$CASE_ID[1])) {
     stop("Incorrect prefix specified. Please input the correct prefix for the current tumour case.")
   }
 
@@ -232,29 +232,29 @@ treebuilding_preprocess <- function(input_table, prefix, out_dir) {
   removed_mutations <- c()
   for (mutation_id in unique(input_table$mutation_id))
   {
-    if(length(unique(tmp[tmp$mutation_id%in%mutation_id,]$CLUSTER))==0)
+    if (length(unique(tmp[tmp$mutation_id %in% mutation_id,]$CLUSTER)) == 0)
     {
       # add warning
-      removed_mutations <- c(removed_mutations,mutation_id)
+      removed_mutations <- c(removed_mutations, mutation_id)
       cat('\nwarning:')
-      cat('', paste(mutation_id),'does not have a CLUSTER assigned, will remove')
+      cat('', paste(mutation_id), 'does not have a CLUSTER assigned, will remove')
       next;
     }
 
-    input_table[input_table$mutation_id%in%mutation_id,]$CLUSTER <- unique(tmp[tmp$mutation_id%in%mutation_id,]$CLUSTER)
+    input_table[input_table$mutation_id %in% mutation_id,]$CLUSTER <- unique(tmp[tmp$mutation_id %in% mutation_id,]$CLUSTER)
   }
 
-  if(length(removed_mutations)>=1)
+  if (length(removed_mutations) >= 1)
   {
-    cat(paste('\nwarning: ',length(removed_mutations), ' mutations removed due to lack of cluster assignment',sep=""))
+    cat(paste('\nwarning: ', length(removed_mutations), ' mutations removed due to lack of cluster assignment', sep = ""))
   }
 
-  input_table <- input_table[!is.na(input_table$CLUSTER),,drop=FALSE]
+  input_table <- input_table[!is.na(input_table$CLUSTER), , drop = FALSE]
 
   # check again:
-  nr_unique_muts           <- length(unique(input_table$mutation_id))
-  nr_regions               <- length(unique(input_table$SAMPLE))
-  regions                  <- unique(input_table$SAMPLE)
+  nr_unique_muts <- length(unique(input_table$mutation_id))
+  nr_regions <- length(unique(input_table$SAMPLE))
+  regions <- unique(input_table$SAMPLE)
 
 
   # Next convert the input_table into a sample_input_list
@@ -267,108 +267,108 @@ treebuilding_preprocess <- function(input_table, prefix, out_dir) {
                         "merged_clusters")
 
   #create the pyclone table
-  input_format           <- data.frame(matrix(data = NA,
-                                              nrow = nr_unique_muts,
-                                              ncol = 11*nr_regions+2),
-                                       stringsAsFactors = FALSE)
-  colnames(input_format)  <- c(paste(regions, "_cov", sep = "")
-                               ,paste(regions, "_var_count", sep = "")
-                               ,paste(regions, "_VAF", sep = "")
-                               ,paste(regions,"_PhyloCCF",sep="")
-                               ,paste(regions,"_PycloneCCF",sep="")
-                               ,paste(regions,"_Pyclone_0.05",sep="")
-                               ,paste(regions,"_Pyclone_0.95",sep="")
-                               ,paste(regions,"_cpn.copies",sep="")
-                               ,paste(regions,"_mut.cpn.num",sep="")
-                               ,paste(regions,"_nAraw",sep="")
-                               ,paste(regions,"_nBraw",sep="")
-                               ,"PycloneCluster"
-                               ,"CleanCluster")
+  input_format <- data.frame(matrix(data = NA,
+                                    nrow = nr_unique_muts,
+                                    ncol = 11 * nr_regions + 2),
+                             stringsAsFactors = FALSE)
+  colnames(input_format) <- c(paste(regions, "_cov", sep = "")
+    , paste(regions, "_var_count", sep = "")
+    , paste(regions, "_VAF", sep = "")
+    , paste(regions, "_PhyloCCF", sep = "")
+    , paste(regions, "_PycloneCCF", sep = "")
+    , paste(regions, "_Pyclone_0.05", sep = "")
+    , paste(regions, "_Pyclone_0.95", sep = "")
+    , paste(regions, "_cpn.copies", sep = "")
+    , paste(regions, "_mut.cpn.num", sep = "")
+    , paste(regions, "_nAraw", sep = "")
+    , paste(regions, "_nBraw", sep = "")
+    , "PycloneCluster"
+    , "CleanCluster")
   rownames(input_format) <- unique(input_table$mutation_id)
   # next populate the table
   for (mutation_id in rownames(input_format))
   {
-    spec_mut_table <- input_table[input_table$mutation_id%in%mutation_id,,drop=FALSE]
+    spec_mut_table <- input_table[input_table$mutation_id %in% mutation_id, , drop = FALSE]
     for (i in 1:nrow(spec_mut_table))
     {
-      region_spec_mut <- spec_mut_table[i,,drop=FALSE]
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_cov',sep="")] <- region_spec_mut$DEPTH
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_var_count',sep="")] <- region_spec_mut$VAR_COUNT
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_VAF',sep="")] <- region_spec_mut$VAR_COUNT / region_spec_mut$DEPTH
+      region_spec_mut <- spec_mut_table[i, , drop = FALSE]
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_cov', sep = "")] <- region_spec_mut$DEPTH
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_var_count', sep = "")] <- region_spec_mut$VAR_COUNT
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_VAF', sep = "")] <- region_spec_mut$VAR_COUNT / region_spec_mut$DEPTH
 
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_PhyloCCF',sep="")] <- region_spec_mut$CCF_PHYLO
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_PycloneCCF',sep="")] <- region_spec_mut$CCF_PHYLO
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_Pyclone_0.05',sep="")] <- region_spec_mut$CCF_PHYLO
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_Pyclone_0.95',sep="")] <- region_spec_mut$CCF_PHYLO
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_cpn.copies',sep="")] <- 1
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_PhyloCCF', sep = "")] <- region_spec_mut$CCF_PHYLO
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_PycloneCCF', sep = "")] <- region_spec_mut$CCF_PHYLO
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_Pyclone_0.05', sep = "")] <- region_spec_mut$CCF_PHYLO
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_Pyclone_0.95', sep = "")] <- region_spec_mut$CCF_PHYLO
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_cpn.copies', sep = "")] <- 1
 
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_mut.cpn.num',sep="")] <- region_spec_mut$MUT_COPY
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_nAraw',sep="")] <- region_spec_mut$COPY_NUMBER_A
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_nBraw',sep="")] <- region_spec_mut$COPY_NUMBER_B
-      input_format[mutation_id,"PycloneCluster"] <- region_spec_mut$CLUSTER
-      input_format[mutation_id,"CleanCluster"]  <- 1
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_mut.cpn.num', sep = "")] <- region_spec_mut$MUT_COPY
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_nAraw', sep = "")] <- region_spec_mut$COPY_NUMBER_A
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_nBraw', sep = "")] <- region_spec_mut$COPY_NUMBER_B
+      input_format[mutation_id, "PycloneCluster"] <- region_spec_mut$CLUSTER
+      input_format[mutation_id, "CleanCluster"] <- 1
     }
   }
 
   # Do the same thing for pyclone_absolute (non-subclonal-copy-number-corrected version)
   #create the pyclone table
-  input_format_absolute           <- data.frame(matrix(data = NA,
-                                                       nrow = nr_unique_muts,
-                                                       ncol = 11*nr_regions+2),
-                                                stringsAsFactors = FALSE)
-  colnames(input_format_absolute)  <- c(paste(regions, "_cov", sep = "")
-                                        ,paste(regions, "_var_count", sep = "")
-                                        ,paste(regions, "_VAF", sep = "")
-                                        ,paste(regions,"_PhyloCCF",sep="")
-                                        ,paste(regions,"_PycloneCCF",sep="")
-                                        ,paste(regions,"_Pyclone_0.05",sep="")
-                                        ,paste(regions,"_Pyclone_0.95",sep="")
-                                        ,paste(regions,"_cpn.copies",sep="")
-                                        ,paste(regions,"_mut.cpn.num",sep="")
-                                        ,paste(regions,"_nAraw",sep="")
-                                        ,paste(regions,"_nBraw",sep="")
-                                        ,"PycloneCluster"
-                                        ,"CleanCluster")
+  input_format_absolute <- data.frame(matrix(data = NA,
+                                             nrow = nr_unique_muts,
+                                             ncol = 11 * nr_regions + 2),
+                                      stringsAsFactors = FALSE)
+  colnames(input_format_absolute) <- c(paste(regions, "_cov", sep = "")
+    , paste(regions, "_var_count", sep = "")
+    , paste(regions, "_VAF", sep = "")
+    , paste(regions, "_PhyloCCF", sep = "")
+    , paste(regions, "_PycloneCCF", sep = "")
+    , paste(regions, "_Pyclone_0.05", sep = "")
+    , paste(regions, "_Pyclone_0.95", sep = "")
+    , paste(regions, "_cpn.copies", sep = "")
+    , paste(regions, "_mut.cpn.num", sep = "")
+    , paste(regions, "_nAraw", sep = "")
+    , paste(regions, "_nBraw", sep = "")
+    , "PycloneCluster"
+    , "CleanCluster")
   rownames(input_format_absolute) <- unique(input_table$mutation_id)
   # next populate the table
   for (mutation_id in rownames(input_format_absolute))
   {
-    spec_mut_table <- input_table[input_table$mutation_id%in%mutation_id,,drop=FALSE]
+    spec_mut_table <- input_table[input_table$mutation_id %in% mutation_id, , drop = FALSE]
 
     for (i in 1:nrow(spec_mut_table))
     {
-      region_spec_mut <- spec_mut_table[i,,drop=FALSE]
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_cov',sep="")] <- region_spec_mut$DEPTH
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_var_count',sep="")] <- region_spec_mut$VAR_COUNT
-      input_format[mutation_id,paste(region_spec_mut$SAMPLE,'_VAF',sep="")] <- region_spec_mut$VAR_COUNT / region_spec_mut$DEPTH
+      region_spec_mut <- spec_mut_table[i, , drop = FALSE]
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_cov', sep = "")] <- region_spec_mut$DEPTH
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_var_count', sep = "")] <- region_spec_mut$VAR_COUNT
+      input_format[mutation_id, paste(region_spec_mut$SAMPLE, '_VAF', sep = "")] <- region_spec_mut$VAR_COUNT / region_spec_mut$DEPTH
 
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_PhyloCCF',sep="")] <- region_spec_mut$CCF_OBS
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_PycloneCCF',sep="")] <- region_spec_mut$CCF_OBS
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_Pyclone_0.05',sep="")] <- region_spec_mut$CCF_OBS
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_Pyclone_0.95',sep="")] <- region_spec_mut$CCF_OBS
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_cpn.copies',sep="")] <- 1
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_PhyloCCF', sep = "")] <- region_spec_mut$CCF_OBS
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_PycloneCCF', sep = "")] <- region_spec_mut$CCF_OBS
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_Pyclone_0.05', sep = "")] <- region_spec_mut$CCF_OBS
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_Pyclone_0.95', sep = "")] <- region_spec_mut$CCF_OBS
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_cpn.copies', sep = "")] <- 1
 
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_mut.cpn.num',sep="")] <- region_spec_mut$MUT_COPY
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_nAraw',sep="")] <- region_spec_mut$COPY_NUMBER_A
-      input_format_absolute[mutation_id,paste(region_spec_mut$SAMPLE,'_nBraw',sep="")] <- region_spec_mut$COPY_NUMBER_B
-      input_format_absolute[mutation_id,"PycloneCluster"] <- region_spec_mut$CLUSTER
-      input_format_absolute[mutation_id,"CleanCluster"]  <- 1
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_mut.cpn.num', sep = "")] <- region_spec_mut$MUT_COPY
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_nAraw', sep = "")] <- region_spec_mut$COPY_NUMBER_A
+      input_format_absolute[mutation_id, paste(region_spec_mut$SAMPLE, '_nBraw', sep = "")] <- region_spec_mut$COPY_NUMBER_B
+      input_format_absolute[mutation_id, "PycloneCluster"] <- region_spec_mut$CLUSTER
+      input_format_absolute[mutation_id, "CleanCluster"] <- 1
 
     }
 
   }
 
   # Now create list object for input to treebuilding
-  input_list$pyclone          <- input_format
+  input_list$pyclone <- input_format
   input_list$pyclone_absolute <- input_format_absolute
-  input_list$sampleID         <- input_table$CASE_ID[1]
-  input_list$prefix           <- prefix
-  input_list$generalSave      <- out_dir
-  input_list$merged_clusters   <- NA
+  input_list$sampleID <- input_table$CASE_ID[1]
+  input_list$prefix <- prefix
+  input_list$generalSave <- out_dir
+  input_list$merged_clusters <- NA
 
-  if(!file.exists(input_list$generalSave))
+  if (!file.exists(input_list$generalSave))
   {
-    dir.create(input_list$generalSave,showWarnings = TRUE, recursive = TRUE, mode = "0775")
+    dir.create(input_list$generalSave, showWarnings = TRUE, recursive = TRUE, mode = "0775")
   }
 
   return(input_list)
@@ -409,17 +409,17 @@ treebuilding_preprocess <- function(input_table, prefix, out_dir) {
 #' @export treebuilding_run
 
 treebuilding_run <- function(sample_input_list
-                                  , ccf_buffer = 10
-                                  , pval_cutoff = 0.01
-                                  , use_boot = TRUE
-                                  , merge_clusters = TRUE
-                                  , correct_cpn_clusters = TRUE
-                                  , adjust_noisy_clusters = FALSE
-                                  , adjust_noisy_clusters_prop = 0.05
-                                  , min_ccf = 0.01
-                                  , min_cluster_size = 5
-                                  , run.multi.trees = TRUE
-                                  , n_clusters_to_move = 5
+                             , ccf_buffer = 10
+                             , pval_cutoff = 0.01
+                             , use_boot = TRUE
+                             , merge_clusters = TRUE
+                             , correct_cpn_clusters = TRUE
+                             , adjust_noisy_clusters = FALSE
+                             , adjust_noisy_clusters_prop = 0.05
+                             , min_ccf = 0.01
+                             , min_cluster_size = 5
+                             , run.multi.trees = TRUE
+                             , n_clusters_to_move = 5
 ) {
   suppressPackageStartupMessages(require(igraph))
   suppressPackageStartupMessages(require(mapplots))
@@ -427,78 +427,78 @@ treebuilding_run <- function(sample_input_list
   cat('\n\nStarting Tree Building')
   #first keep track of parameters used for this
   input_parameter_list <- list()
-  input_parameter_list$sampleID                      <- sampleID               <- sample_input_list$sampleID
-  input_parameter_list$prefix                        <- prefix                 <- sample_input_list$prefix
-  input_parameter_list$generalSave                   <- generalSave            <- sample_input_list$generalSave
-  input_parameter_list$ccf_buffer                    <- ccf_buffer
-  input_parameter_list$pval_cutoff                   <- pval_cutoff
-  input_parameter_list$use_boot                      <- use_boot
-  input_parameter_list$merge_clusters                <- merge_clusters
-  input_parameter_list$correct_cpn_clusters          <- correct_cpn_clusters
-  input_parameter_list$adjust_noisy_clusters         <- adjust_noisy_clusters
-  input_parameter_list$adjust_noisy_clusters_prop    <- adjust_noisy_clusters_prop
-  input_parameter_list$min_ccf                       <- min_ccf
-  input_parameter_list$min_cluster_size              <- min_cluster_size
+  input_parameter_list$sampleID <- sampleID <- sample_input_list$sampleID
+  input_parameter_list$prefix <- prefix <- sample_input_list$prefix
+  input_parameter_list$generalSave <- generalSave <- sample_input_list$generalSave
+  input_parameter_list$ccf_buffer <- ccf_buffer
+  input_parameter_list$pval_cutoff <- pval_cutoff
+  input_parameter_list$use_boot <- use_boot
+  input_parameter_list$merge_clusters <- merge_clusters
+  input_parameter_list$correct_cpn_clusters <- correct_cpn_clusters
+  input_parameter_list$adjust_noisy_clusters <- adjust_noisy_clusters
+  input_parameter_list$adjust_noisy_clusters_prop <- adjust_noisy_clusters_prop
+  input_parameter_list$min_ccf <- min_ccf
+  input_parameter_list$min_cluster_size <- min_cluster_size
 
   cat('\nFollowing parameters used for tree building:\n')
-  print(do.call(rbind,input_parameter_list))
+  print(do.call(rbind, input_parameter_list))
 
   # prepare the output
-  output_list  <- list()
-  output_list$ccf_table_pyclone                      <- sample_input_list$pyclone
-  output_list$ccf_table_absolute                     <- sample_input_list$pyclone_absolute
-  output_list$ccf_table_pyclone_clean                <- sample_input_list$pyclone
-  output_list$ccf_table_absolute_clean               <- sample_input_list$pyclone_absolute
+  output_list <- list()
+  output_list$ccf_table_pyclone <- sample_input_list$pyclone
+  output_list$ccf_table_absolute <- sample_input_list$pyclone_absolute
+  output_list$ccf_table_pyclone_clean <- sample_input_list$pyclone
+  output_list$ccf_table_absolute_clean <- sample_input_list$pyclone_absolute
 
-  output_list$merged_clusters                        <- sample_input_list$merged_clusters
+  output_list$merged_clusters <- sample_input_list$merged_clusters
 
-  output_list$noisy_clusters_adjusted                <- NA
-  output_list$cpn_removed_clusters                   <- NA
-  output_list$tree_removed_clusters                  <- NA
+  output_list$noisy_clusters_adjusted <- NA
+  output_list$cpn_removed_clusters <- NA
+  output_list$tree_removed_clusters <- NA
 
-  test_pyclone          <- sample_input_list$pyclone
+  test_pyclone <- sample_input_list$pyclone
   test_pyclone_absolute <- sample_input_list$pyclone_absolute
 
-  if(adjust_noisy_clusters)
+  if (adjust_noisy_clusters)
   {
     cat('\nAdjusting noisy clusters\n')
-    pyclone_adj  <- clean.noisy.clusters(pyclone = test_pyclone,max.absent.prop = adjust_noisy_clusters_prop)
+    pyclone_adj <- clean.noisy.clusters(pyclone = test_pyclone, max.absent.prop = adjust_noisy_clusters_prop)
     test_pyclone <- pyclone_adj$corrected_pyclone
 
     output_list$ccf_table_pyclone_clean <- test_pyclone
 
-    if(!is.na(pyclone_adj$corrected_cluster)[1])
+    if (!is.na(pyclone_adj$corrected_cluster)[1])
     {
       tmp <- pyclone_adj$corrected_cluster
-      colnames(tmp) <- c('region','cluster')
+      colnames(tmp) <- c('region', 'cluster')
       output_list$noisy_clusters_adjusted <- tmp
       cat('\nThe following clusters were adjusted:\n')
       print(tmp)
     }
 
-    pyclone_adj_absolute  <- clean.noisy.clusters(test_pyclone_absolute,max.absent.prop = adjust_noisy_clusters_prop)
+    pyclone_adj_absolute <- clean.noisy.clusters(test_pyclone_absolute, max.absent.prop = adjust_noisy_clusters_prop)
     test_pyclone_absolute <- pyclone_adj_absolute$corrected_pyclone
 
     output_list$ccf_table_absolute_clean <- test_pyclone_absolute
   }
 
   # make sure you only use clean clusters
-  test_pyclone          <- test_pyclone[test_pyclone[, "CleanCluster"] %in% 1, -ncol(test_pyclone)]
+  test_pyclone <- test_pyclone[test_pyclone[, "CleanCluster"] %in% 1, -ncol(test_pyclone)]
   test_pyclone_absolute <- test_pyclone_absolute[test_pyclone_absolute[, "CleanCluster"] %in% 1, -ncol(test_pyclone_absolute)]
 
   if (nrow(test_pyclone) < min_cluster_size) { stop('too few mutations to run tree building') }
   if (sort(table(test_pyclone[, 'PycloneCluster']), decreasing = T)[1] < min_cluster_size) { stop('too few mutations to run tree building') }
 
-  clusters_with_min_cluster_sizeations <- table(test_pyclone[,'PycloneCluster'])[table(test_pyclone[,'PycloneCluster'])>=min_cluster_size]
+  clusters_with_min_cluster_sizeations <- table(test_pyclone[, 'PycloneCluster'])[table(test_pyclone[, 'PycloneCluster']) >= min_cluster_size]
 
 
   cat('\n\n\nDetermining nesting of clusters\n')
   nested_pyclone <- determine.cluster.nesting(pyclone = test_pyclone
-                                              , prefix = prefix
-                                              , min_cluster_size = max(c(2, min_cluster_size))
-                                              , pval_cutoff = pval_cutoff
-                                              , use_boot =use_boot
-                                              , min_ccf =  min_ccf
+    , prefix = prefix
+    , min_cluster_size = max(c(2, min_cluster_size))
+    , pval_cutoff = pval_cutoff
+    , use_boot = use_boot
+    , min_ccf = min_ccf
   )
 
   # NM additional step, taking clonality into account when nesting [05/04/2022]
@@ -507,62 +507,62 @@ treebuilding_run <- function(sample_input_list
   rowsums <- rowSums(nested_pyclone$nestedclust)
   trunk_cluster <- names(colsums[which(colsums == max(colsums))])
   if (length(trunk_cluster) > 1) {
-    trunk_cluster <- names(sort(rowMeans(nested_pyclone$ccf_cluster_table[trunk_cluster,, drop = F]), decreasing = T))[1]
+    trunk_cluster <- names(sort(rowMeans(nested_pyclone$ccf_cluster_table[trunk_cluster, , drop = F]), decreasing = T))[1]
   }
 
   clonality_table <- clonality.function(pyclone = test_pyclone
-                                        ,trunk =trunk_cluster
-                                        ,prefix = prefix
-                                        , min_cluster_size = max(c(2, min_cluster_size))
-                                        ,pval_cutoff = pval_cutoff
-                                        ,use_boot =use_boot )
+    , trunk = trunk_cluster
+    , prefix = prefix
+    , min_cluster_size = max(c(2, min_cluster_size))
+    , pval_cutoff = pval_cutoff
+    , use_boot = use_boot)
 
 
-  nested_pyclone  <- correct.clonality.nesting(nestedlist = nested_pyclone
-                                               , pyclone = test_pyclone
-                                               , clonality_table = clonality_table
-                                               , pval_cutoff = pval_cutoff
-                                               , min_cluster_size = min_cluster_size
-                                               , min_ccf = min_ccf
-                                               , prefix = prefix
+  nested_pyclone <- correct.clonality.nesting(nestedlist = nested_pyclone
+    , pyclone = test_pyclone
+    , clonality_table = clonality_table
+    , pval_cutoff = pval_cutoff
+    , min_cluster_size = min_cluster_size
+    , min_ccf = min_ccf
+    , prefix = prefix
   )
   # finish additional step NM [05/04/2022]
   cat('\nThe following nesting identified:\n')
-  print(nested_pyclone$nestedclust[,order(colSums(nested_pyclone$nestedclust),decreasing=T)])
+  print(nested_pyclone$nestedclust[, order(colSums(nested_pyclone$nestedclust), decreasing = T)])
   cat('\n')
 
   nested_pyclone_absolute <- determine.cluster.nesting(pyclone = test_pyclone_absolute
-                                                       , prefix = prefix
-                                                       , min_cluster_size = max(c(2, min_cluster_size))
-                                                       , pval_cutoff = pval_cutoff
-                                                       , use_boot =use_boot
-                                                       , min_ccf =  min_ccf
+    , prefix = prefix
+    , min_cluster_size = max(c(2, min_cluster_size))
+    , pval_cutoff = pval_cutoff
+    , use_boot = use_boot
+    , min_ccf = min_ccf
   )
 
 
   # we only merge clusters if we're not using absolute.
-  if(merge_clusters %in% TRUE &
-     nrow(nested_pyclone$nestedclust) > 1 &
-     nrow(nested_pyclone_absolute$nestedclust) > 1)
+  if (merge_clusters %in% TRUE &
+    nrow(nested_pyclone$nestedclust) > 1 &
+    nrow(nested_pyclone_absolute$nestedclust) > 1)
   {
     cat('\nChecking for cluster merging\n')
     out <- merge.clusters.full(test_pyclone = test_pyclone
-                               ,test_pyclone_absolute = test_pyclone_absolute
-                               ,nested_pyclone = nested_pyclone
-                               ,nested_pyclone_absolute = nested_pyclone_absolute
-                               ,prefix = prefix
-                               ,min_ccf = min_ccf
-                               ,p_value_cut = pval_cutoff
-                               ,min_cluster_size = min_cluster_size
-                               ,use_boot = use_boot
+      , test_pyclone_absolute = test_pyclone_absolute
+      , nested_pyclone = nested_pyclone
+      , nested_pyclone_absolute = nested_pyclone_absolute
+      , prefix = prefix
+      , min_ccf = min_ccf
+      , p_value_cut = pval_cutoff
+      , min_cluster_size = min_cluster_size
+      , use_boot = use_boot
     )
 
-    nested_pyclone   <- out$nested_pyclone
-    test_pyclone     <- out$test_pyclone
+    nested_pyclone <- out$nested_pyclone
+    test_pyclone <- out$test_pyclone
 
-    if(!is.na(out$mergedclusters[1]) & !is.na(output_list$merged_clusters))
+    if (!is.na(out$mergedclusters[1]) & !is.na(output_list$merged_clusters))
     {
-      output_list$merged_clusters <- rbind(out$mergedclusters,output_list$merged_clusters)
+      output_list$merged_clusters <- rbind(out$mergedclusters, output_list$merged_clusters)
       cat('\nThe following clusters were merged:\n')
       print(out$mergedclusters)
       cat('\n')
@@ -578,7 +578,7 @@ treebuilding_run <- function(sample_input_list
 
 
   # remove the genomically clustered clones which may be driven by undetected subclonal copy number
-  if(correct_cpn_clusters)
+  if (correct_cpn_clusters)
   {
     cat('\nChecking for chromosome clustered clusters')
     # determine clonal/trunk cluster using same method as for tree building
@@ -587,25 +587,25 @@ treebuilding_run <- function(sample_input_list
     rowsums <- rowSums(nested_pyclone$nestedclust)
     trunk_cluster <- names(colsums[which(colsums == max(colsums))])
     if (length(trunk_cluster) > 1) {
-      trunk_cluster <- names(sort(rowMeans(nested_pyclone$ccf_cluster_table[trunk_cluster,, drop = F]), decreasing = T))[1]
+      trunk_cluster <- names(sort(rowMeans(nested_pyclone$ccf_cluster_table[trunk_cluster, , drop = F]), decreasing = T))[1]
     }
     #remove the genomically clustered clones which may be driven by undetected subclonal copy number
     new_test_pyclone <- remove_clustered_clones(test_pyclone,
                                                 clonal_cluster = trunk_cluster,
                                                 p_value_cut = 0.01,
-                                                clustering_estimate_cut = 2 )
+                                                clustering_estimate_cut = 2)
 
-    if(identical(new_test_pyclone,test_pyclone))
+    if (identical(new_test_pyclone, test_pyclone))
     {
       cat('\nNo clusters removed\n')
     }
-    if(!identical(new_test_pyclone,test_pyclone))
+    if (!identical(new_test_pyclone, test_pyclone))
     {
       #
       cat('\nThe following clusters removed due to genomic clustering:\n')
       # sort out if copy number cluster removed.
-      cpn_removed_clusters <- names(nested_pyclone$cluster_qc[,'ClusterName'])[!nested_pyclone$cluster_qc[,'ClusterName']%in%unique(new_test_pyclone[,'PycloneCluster'])]
-      nested_pyclone$cluster_qc[nested_pyclone$cluster_qc[,'ClusterName']%in%cpn_removed_clusters,'CopyNumRemove'] <- 1
+      cpn_removed_clusters <- names(nested_pyclone$cluster_qc[, 'ClusterName'])[!nested_pyclone$cluster_qc[, 'ClusterName'] %in% unique(new_test_pyclone[, 'PycloneCluster'])]
+      nested_pyclone$cluster_qc[nested_pyclone$cluster_qc[, 'ClusterName'] %in% cpn_removed_clusters, 'CopyNumRemove'] <- 1
       output_list$cpn_removed_clusters <- cpn_removed_clusters
 
 
@@ -613,38 +613,38 @@ treebuilding_run <- function(sample_input_list
       cat('\n')
     }
 
-    test_pyclone    <- new_test_pyclone
+    test_pyclone <- new_test_pyclone
     output_list$ccf_table_pyclone_clean <- test_pyclone
   }
 
   cat('\nBuilding trees...')
   # check whether this means all the clusters are removed.
-  graph_pyclone  <- grow.trees( nestedlist = nested_pyclone
-                                , pyclone = test_pyclone
-                                , min_cluster_size = min_cluster_size
-                                , force_trunk = TRUE
-                                , ccf_buffer = ccf_buffer
+  graph_pyclone <- grow.trees(nestedlist = nested_pyclone
+    , pyclone = test_pyclone
+    , min_cluster_size = min_cluster_size
+    , force_trunk = TRUE
+    , ccf_buffer = ccf_buffer
   )
 
-  output_list$tree_removed_clusters <-  graph_pyclone$Clusters_with_issues
+  output_list$tree_removed_clusters <- graph_pyclone$Clusters_with_issues
 
   cat('\n------------------\n')
   cat('\nTree identified\n')
 
   clonality_table <- clonality.function(pyclone = test_pyclone
-                                        ,trunk = graph_pyclone$trunk
-                                        ,prefix = prefix
-                                        , min_cluster_size = max(c(2, min_cluster_size))
-                                        ,pval_cutoff = pval_cutoff
-                                        ,use_boot = use_boot )
+    , trunk = graph_pyclone$trunk
+    , prefix = prefix
+    , min_cluster_size = max(c(2, min_cluster_size))
+    , pval_cutoff = pval_cutoff
+    , use_boot = use_boot)
 
-  clonality_out   <- correct.clonality.table(clonality_table = clonality_table
-                                             , graph_pyclone = graph_pyclone
-                                             , trunk_cluster = graph_pyclone$trunk) #TODO still may need correcting for one region cases #EC 20210509
+  clonality_out <- correct.clonality.table(clonality_table = clonality_table
+    , graph_pyclone = graph_pyclone
+    , trunk_cluster = graph_pyclone$trunk) #TODO still may need correcting for one region cases #EC 20210509
 
   ### AH edit set CCF in ccf cluster table as well as upper and lower CIs to 0 if cluster is defined as absent
   for (region in colnames(clonality_table)) {
-    tmp.absentClust <- rownames(clonality_table)[clonality_table[,region] == "absent"]
+    tmp.absentClust <- rownames(clonality_table)[clonality_table[, region] == "absent"]
     if (any(nested_pyclone$ccf_cluster_table[tmp.absentClust, region] != 0)) {
       print("Absent clusters with meanCCF > 0. Resetting to 0 in ccf cluster table")
       nested_pyclone$ccf_cluster_table[tmp.absentClust, region] <- 0
@@ -656,43 +656,43 @@ treebuilding_run <- function(sample_input_list
 
   if (run.multi.trees) {
     cat('\nExploring presence of multiple alternate trees')
-    multi.trees     <- grow.multi.trees(nestedlist = nested_pyclone
-                                        ,pyclone = test_pyclone
-                                        ,graph_pyclone = graph_pyclone
-                                        ,ccf_buffer = ccf_buffer
-                                        ,n_clusters_to_move = n_clusters_to_move
+    multi.trees <- grow.multi.trees(nestedlist = nested_pyclone
+      , pyclone = test_pyclone
+      , graph_pyclone = graph_pyclone
+      , ccf_buffer = ccf_buffer
+      , n_clusters_to_move = n_clusters_to_move
     )
 
   } else {
     multi.trees <- NULL
   }
 
-  graph_pyclone$alt_trees          <- multi.trees$good.trees
+  graph_pyclone$alt_trees <- multi.trees$good.trees
 
 
-  if(length(multi.trees)==0)
+  if (length(multi.trees) == 0)
   {
-    graph_pyclone$consensus_branches <- paste(graph_pyclone$default_tree[,1],graph_pyclone$default_tree[,2],sep=":")
-    graph_pyclone$nested_clust       <- nested_pyclone[[1]]
+    graph_pyclone$consensus_branches <- paste(graph_pyclone$default_tree[, 1], graph_pyclone$default_tree[, 2], sep = ":")
+    graph_pyclone$nested_clust <- nested_pyclone[[1]]
 
     # list all clone - clone relationships which are common to all alternative trees
     # This captures some tree info for clones where the exact tree position is uncertain
-    graph_pyclone$consensus_relationships <- extract_consensus_relationships( list(graph_pyclone$default_tree ) )
+    graph_pyclone$consensus_relationships <- extract_consensus_relationships(list(graph_pyclone$default_tree))
     graph_pyclone$alt_trees <- list(graph_pyclone$default_tree)
   }
 
-  if(length(multi.trees)!=0)
+  if (length(multi.trees) != 0)
   {
     # check whether any repeats in alt_trees [this can happen due to level issue]
     tree_vector <- c()
     for (i in 1:length(graph_pyclone$alt_trees))
     {
-      tree_vector <- c(tree_vector,PasteVector(sort(paste(graph_pyclone$alt_trees[[i]][,1],graph_pyclone$alt_trees[[i]][,2],sep=":")),sep=","))
+      tree_vector <- c(tree_vector, PasteVector(sort(paste(graph_pyclone$alt_trees[[i]][, 1], graph_pyclone$alt_trees[[i]][, 2], sep = ":")), sep = ","))
 
     }
 
-    alt_trees    <- list()
-    trees_to_use <-  c(1:length(graph_pyclone$alt_trees))[!duplicated(tree_vector)]
+    alt_trees <- list()
+    trees_to_use <- c(1:length(graph_pyclone$alt_trees))[!duplicated(tree_vector)]
     for (i in 1:length(trees_to_use))
     {
       alt_trees[[i]] <- graph_pyclone$alt_trees[[trees_to_use[i]]]
@@ -701,11 +701,11 @@ treebuilding_run <- function(sample_input_list
     graph_pyclone$alt_trees <- alt_trees
 
     graph_pyclone$consensus_branches <- multi.trees$consensus.branches
-    graph_pyclone$nested_clust       <- multi.trees$consensus.nestedclust
+    graph_pyclone$nested_clust <- multi.trees$consensus.nestedclust
 
     # list all clone - clone relationships which are common to all alternative trees
     # This captures some tree info for clones where the exact tree position is uncertain
-    graph_pyclone$consensus_relationships <- extract_consensus_relationships( alt_trees )
+    graph_pyclone$consensus_relationships <- extract_consensus_relationships(alt_trees)
 
   }
 
@@ -738,7 +738,7 @@ treebuilding_run <- function(sample_input_list
 
   # 2) Compute subclone proportions from lowest error tree:
   cat('\n\nComputing clone proportions from tree with lowest sum condition error\n')
-  clone_proportions_min_sce_trees <- lapply(graph_pyclone$min_sce_trees, function(i){
+  clone_proportions_min_sce_trees <- lapply(graph_pyclone$min_sce_trees, function(i) {
     compute_subclone_proportions(tree_list = graph_pyclone$alt_trees,
                                  ccf_cluster_table = nested_pyclone$ccf_cluster_table,
                                  clonality_table = clonality_out$clonality_table_corrected,
@@ -759,7 +759,7 @@ treebuilding_run <- function(sample_input_list
 
   # 2) Compute subclonal expansion score from lowest error tree:
   cat('\n\nComputing subclonal expansion score from tree with lowest sum condition error\n')
-  subclonal_exp_score_min_sce_trees <- lapply(graph_pyclone$min_sce_trees, function(i){
+  subclonal_exp_score_min_sce_trees <- lapply(graph_pyclone$min_sce_trees, function(i) {
     compute_subclonal_expansion_score(tree_list = graph_pyclone$alt_trees,
                                       tree_id = as.numeric(i),
                                       ccf_table_pyclone_clean = output_list$ccf_table_pyclone_clean)
@@ -771,17 +771,17 @@ treebuilding_run <- function(sample_input_list
 
   ### Finally, save all tree output
   # Save sample ID
-  graph_pyclone$sampleID  <- sampleID
-  graph_pyclone$long_sampleID  <- trx_rename.fn(sampleID, trialID = prefix)
+  graph_pyclone$sampleID <- sampleID
+  graph_pyclone$long_sampleID <- trx_rename.fn(sampleID, trialID = prefix)
 
   # Saving all output to list
-  output_list$graph_pyclone                           <- graph_pyclone
-  output_list$parameters                              <- input_parameter_list
-  output_list$nested_pyclone                          <- nested_pyclone
-  output_list$clonality_table                         <- clonality_table
-  output_list$clonality_out                           <- clonality_out
-  output_list$clone_proportion_out                    <- clone_proportion_out
-  output_list$subclonal_expansion_score_out           <- subclonal_exp_score_out
+  output_list$graph_pyclone <- graph_pyclone
+  output_list$parameters <- input_parameter_list
+  output_list$nested_pyclone <- nested_pyclone
+  output_list$clonality_table <- clonality_table
+  output_list$clonality_out <- clonality_out
+  output_list$clone_proportion_out <- clone_proportion_out
+  output_list$subclonal_expansion_score_out <- subclonal_exp_score_out
 
   #let's save the output_list
   output_rds <- file.path(generalSave, paste0(sampleID, ".tree.RDS"))
@@ -805,7 +805,7 @@ treebuilding_run <- function(sample_input_list
 treebuilding_plot <- function(sample_pyclone_tree) {
   cat('\n Plotting inferred phylogenetic tree \n')
   require(mapplots)
-  sampleID  <-  sample_pyclone_tree$parameters$sampleID
+  sampleID <- sample_pyclone_tree$parameters$sampleID
   prefix <- sample_pyclone_tree$parameters$prefix
   generalSave <- sample_pyclone_tree$parameters$generalSave
   ccf_buffer <- sample_pyclone_tree$parameters$ccf_buffer
@@ -816,15 +816,15 @@ treebuilding_plot <- function(sample_pyclone_tree) {
   adjust_noisy_clusters <- sample_pyclone_tree$parameters$adjust_noisy_clusters
   adjust_noisy_clusters_prop <- sample_pyclone_tree$parameters$adjust_noisy_clusters_prop
   min_ccf <- sample_pyclone_tree$parameters$min_ccf
-  min_cluster_size           <- sample_pyclone_tree$parameters$min_cluster_size
+  min_cluster_size <- sample_pyclone_tree$parameters$min_cluster_size
 
   nested_pyclone <- sample_pyclone_tree$nested_pyclone
   pyclone_tree   <- sample_pyclone_tree$graph_pyclone
   clonality_table <- sample_pyclone_tree$clonality_out$clonality_table_corrected
   clonality_out <- sample_pyclone_tree$clonality_out
-  test_pyclone  <- sample_pyclone_tree$ccf_table_pyclone_clean
+  test_pyclone <- sample_pyclone_tree$ccf_table_pyclone_clean
   cpn_removed_clusters <- sample_pyclone_tree$cpn_removed_clusters
-  if(length(cpn_removed_clusters)==0)
+  if (length(cpn_removed_clusters) == 0)
   {
     cpn_removed_clusters <- NA
   }
@@ -832,92 +832,93 @@ treebuilding_plot <- function(sample_pyclone_tree) {
   merged_clusters <- sample_pyclone_tree$merged_clusters
 
   ### Plot trees -- AUTOMATIC
+  cat('\nCreating the tree and bar plot...\n')
   date <- gsub('-', '', substr(Sys.time(), 1, 10))
 
   pdfname <- file.path(generalSave, 'pytree_and_bar.pdf')
 
-  height.mult.factor <- ceiling(nrow(nested_pyclone$ccf_cluster_table)/25)
-  width.mult.factor  <- ceiling(nrow(nested_pyclone$ccf_cluster_table)/25)
+  height.mult.factor <- ceiling(nrow(nested_pyclone$ccf_cluster_table) / 25)
+  width.mult.factor <- ceiling(nrow(nested_pyclone$ccf_cluster_table) / 25)
 
 
-  pdf(pdfname, width=22*width.mult.factor, height=12*height.mult.factor)
+  pdf(pdfname, width = 22 * width.mult.factor, height = 12 * height.mult.factor)
+{
+  par(mar = c(0, 0, 0, 0))
+  layout(cbind(1:(nrow(nested_pyclone$ccf_cluster_table) + 2), rep(nrow(nested_pyclone$ccf_cluster_table) + 3, nrow(nested_pyclone$ccf_cluster_table) + 2), rep(nrow(nested_pyclone$ccf_cluster_table) + 3, nrow(nested_pyclone$ccf_cluster_table) + 2)))
+  require(beeswarm)
+
+  tmp <- nested_pyclone$ccf_cluster_table
+  main <- paste(substr(colnames(tmp)[1], 1, 8), '\ Phylo CCF values', sep = '')
+  colnames(tmp) <- gsub(paste0(substr(colnames(tmp)[1], 1, 8), "_"), "", colnames(tmp))
+  suppressPackageStartupMessages(require(gplots))
+  plot.new()
+  par(mar = c(2, 2, 2, 2))
+  title(main, cex = 2)
+
+  colours.to.use <- color.tree(1:nrow(nested_pyclone$ccf_cluster_table))
+
+  par(mar = c(0.1, 5, 0.1, 2), lend = 1)
+
+  for (j in 1:nrow(nested_pyclone$ccf_cluster_table))
   {
-    par(mar=c(0,0,0,0))
-    layout(cbind(1:(nrow(nested_pyclone$ccf_cluster_table)+2),rep(nrow(nested_pyclone$ccf_cluster_table)+3,nrow(nested_pyclone$ccf_cluster_table)+2),rep(nrow(nested_pyclone$ccf_cluster_table)+3,nrow(nested_pyclone$ccf_cluster_table)+2)))
-    require(beeswarm)
 
-    tmp <- nested_pyclone$ccf_cluster_table
-    main <- paste(substr(colnames(tmp)[1], 1, 8), '\ Phylo CCF values', sep = '')
-    colnames(tmp) <- gsub(paste0(substr(colnames(tmp)[1], 1, 8), "_"), "", colnames(tmp))
-    suppressPackageStartupMessages(require(gplots))
-    plot.new()
-    par(mar=c(2,2,2,2))
-    title(main, cex = 2)
+    if (j == 1)
+    {
+      border.col <- ifelse(clonality_table[j,] == 'clonal', 'black', 'grey')
+      bp <- barplot(nested_pyclone$ccf_cluster_table[j,], las = 1, col = colours.to.use[j], border = border.col, names = "", ylab = paste("Cl", rownames(nested_pyclone$ccf_cluster_table)[j], sep = " "), ylim = c(0, 115), yaxt = 'n', cex.axis = 1.25)
 
-    colours.to.use <- color.tree(1:nrow(nested_pyclone$ccf_cluster_table))
+    }
+    if (j != 1)
+  {
+    border.col <- ifelse(clonality_table[j,] == 'clonal', 'black', 'grey')
+    bp <- barplot(nested_pyclone$ccf_cluster_table[j,], las = 1, col = colours.to.use[j], border = border.col, names = "", ylab = paste("Cl", rownames(nested_pyclone$ccf_cluster_table)[j], sep = " "), ylim = c(0, 115), yaxt = 'n', cex.axis = 1.25)
 
-    par(mar=c(0.1,5,0.1,2),lend=1)
+  }
+    axis(side = 2, at = c(0, 50, 100), labels = c(c(0, 50, 100)), las = 1)
+    if (j == nrow(nested_pyclone$ccf_cluster_table))
+    {
+      axis(side = 1, at = bp, labels = gsub(paste0(substr(colnames(nested_pyclone$ccf_cluster_table)[1], 1, 8), "_"), "", colnames(nested_pyclone$ccf_cluster_table))
+        , tick = FALSE
+        , cex.axis = 1.25)
 
-    for (j in 1:nrow(nested_pyclone$ccf_cluster_table))
+    }
+    abline(h = 0)
+    abline(h = 100, lty = 'dashed')
+    abline(h = 50, lty = 'dashed')
+    for (bar in 1:length(bp))
     {
 
-      if(j==1)
-      {
-        border.col <- ifelse(clonality_table[j,]=='clonal','black','grey')
-        bp <- barplot(nested_pyclone$ccf_cluster_table[j,],las=1,col=colours.to.use[j],border=border.col,names="",ylab=paste("Cl",rownames(nested_pyclone$ccf_cluster_table)[j],sep=" "),ylim=c(0,115),yaxt='n',cex.axis=1.25)
-
-      }
-      if(j!=1)
-      {
-        border.col <- ifelse(clonality_table[j,]=='clonal','black','grey')
-        bp <- barplot(nested_pyclone$ccf_cluster_table[j,],las=1,col=colours.to.use[j],border=border.col,names="",ylab=paste("Cl",rownames(nested_pyclone$ccf_cluster_table)[j],sep=" "),ylim=c(0,115),yaxt='n',cex.axis=1.25)
-
-      }
-      axis(side = 2,at = c(0,50,100),labels=c(c(0,50,100)),las=1)
-      if(j ==nrow(nested_pyclone$ccf_cluster_table))
-      {
-        axis(side=1,at=bp,labels=gsub(paste0(substr(colnames(nested_pyclone$ccf_cluster_table)[1], 1, 8), "_"), "",colnames(nested_pyclone$ccf_cluster_table))
-             ,tick=FALSE
-             ,cex.axis=1.25)
-
-      }
-      abline(h=0)
-      abline(h=100,lty='dashed')
-      abline(h=50,lty='dashed')
-      for (bar in 1:length(bp))
-      {
-
-        beeswarm(test_pyclone[test_pyclone[,'PycloneCluster']%in%rownames(nested_pyclone$ccf_cluster_table)[j],grep('PhyloCCF',colnames(test_pyclone))[bar]]*100
-                 ,at=bp[bar]
-                 ,add=TRUE
-                 ,corralWidth = 0.5
-                 ,method='swarm'
-                 ,corral='wrap'
-                 ,pch=21
-                 ,col=colours.to.use[j]
-                 ,bg='grey')
-        segments(x0 = bp[bar],x1 = bp[bar],y0 = nested_pyclone$ccf_ci_lower[j,bar],y1 = nested_pyclone$ccf_ci_upper[j,bar],lwd=5)
-        text(x=bp[bar],y=25,labels=nested_pyclone$ccf_cluster_table[j,bar],cex =1.5)
-      }
+      beeswarm(test_pyclone[test_pyclone[, 'PycloneCluster'] %in% rownames(nested_pyclone$ccf_cluster_table)[j], grep('PhyloCCF', colnames(test_pyclone))[bar]] * 100
+        , at = bp[bar]
+        , add = TRUE
+        , corralWidth = 0.5
+        , method = 'swarm'
+        , corral = 'wrap'
+        , pch = 21
+        , col = colours.to.use[j]
+        , bg = 'grey')
+      segments(x0 = bp[bar], x1 = bp[bar], y0 = nested_pyclone$ccf_ci_lower[j, bar], y1 = nested_pyclone$ccf_ci_upper[j, bar], lwd = 5)
+      text(x = bp[bar], y = 25, labels = nested_pyclone$ccf_cluster_table[j, bar], cex = 1.5)
     }
+  }
 
-    plot.new()
-    par(mar=c(2.1, 2.1, 4.1, 38), xpd=TRUE)
+  plot.new()
+  par(mar = c(2.1, 2.1, 4.1, 38), xpd = TRUE)
 
-    g <- graph.data.frame(pyclone_tree$default_tree,directed = FALSE)
-    indx <- V(g)$name
-    vcol <- setNames(color.tree(pyclone_tree$edgelength), names(pyclone_tree$edgelength))[indx]
+  g <- graph.data.frame(pyclone_tree$default_tree, directed = FALSE)
+  indx <- V(g)$name
+  vcol <- setNames(color.tree(pyclone_tree$edgelength), names(pyclone_tree$edgelength))[indx]
 
-    l <- layout_as_tree(g, root = pyclone_tree$trunk)
+  l <- layout_as_tree(g, root = pyclone_tree$trunk)
 
     pie.size <- ncol(sample_pyclone_tree$nested_pyclone$ccf_cluster_table)
     node.shape <- setNames(rep('pie', length(vcol)), names(vcol))
     pie.slices <- lapply(1:length(vcol), function(x) rep(1, pie.size))
     empty.col = '#bdbdbd'#'white'
 
-    node_size_factor <- log2(max(pyclone_tree$edgelength)) / 30
-    node.size <- log2(pyclone_tree$edgelength) / node_size_factor
-    node.size <- node.size[names(node.shape)]
+  node_size_factor <- log2(max(pyclone_tree$edgelength)) / 30
+  node.size <- log2(pyclone_tree$edgelength) / node_size_factor
+  node.size <- node.size[names(node.shape)]
 
     pie.colors <- sample_pyclone_tree$nested_pyclone$ccf_cluster_table[match(names(vcol), rownames(sample_pyclone_tree$nested_pyclone$ccf_cluster_table)),, drop = F]
     pie.colors <- ifelse(pie.colors>=90,99,pie.colors)
@@ -935,169 +936,172 @@ treebuilding_plot <- function(sample_pyclone_tree) {
     })
 
 
-    g_dir <- graph.data.frame(pyclone_tree$default_tree,directed = TRUE)
-    edges <- get.edgelist(g_dir)
-    ecol <- setNames(rep('#bdbdbd', nrow(edges)),edges[,2])# baseline, set edge color to black
-    ewidth <- rep(1,length(ecol))
+  g_dir <- graph.data.frame(pyclone_tree$default_tree, directed = TRUE)
+  edges <- get.edgelist(g_dir)
+  ecol <- setNames(rep('#bdbdbd', nrow(edges)), edges[, 2]) # baseline, set edge color to black
+  ewidth <- rep(1, length(ecol))
 
-    #label consensus edges in other colour
-    ecol[paste(edges[,1],edges[,2],sep=":")%in%pyclone_tree$consensus_branches] <- '#000000'
-    ewidth[paste(edges[,1],edges[,2],sep=":")%in%pyclone_tree$consensus_branches] <-150
+  #label consensus edges in other colour
+  ecol[paste(edges[, 1], edges[, 2], sep = ":") %in% pyclone_tree$consensus_branches] <- '#000000'
+  ewidth[paste(edges[, 1], edges[, 2], sep = ":") %in% pyclone_tree$consensus_branches] <- 150
 
-    plot(g
-         , layout=l
-         , main = sampleID
-         , vertex.color = vcol[indx]
-         , vertex.frame.color=vcol[indx]
-         , vertex.shape = node.shape
-         , vertex.lwd=5
-         , vertex.pie.lwd=3
-         , vertex.pie = pie.slices
-         , vertex.pie.color = lapply(pie.colors,rev)
-         , vertex.size = node.size
-         , edge.color=ecol
-         , edge.size=ewidth
-         , vertex.label.cex=2
-         , vertex.label.pos=2
-         , vertex.label.dist=0
-         , vertex.label.family='Helvetica'
-         , vertex.label.font=2
-         , vertex.label.color = 'black')
-
-
-    legend.pie(1,1,labels=gsub(paste0(substr(colnames(tmp)[1], 1, 8), "_"), "", colnames(tmp)), radius=0.2, bty="n", col='#bdbdbd',
-               cex=1.25, label.dist=0.8
-               ,border='white')
-
-    snv_clusters <- sort(pyclone_tree$edgelength[indx], decreasing = T)
-
-    snv_clusters_removed <- pyclone_tree$edgelength
-    snv_clusters_removed <- sort(snv_clusters_removed[!names(snv_clusters_removed) %in% indx], decreasing = T)
-    if(!is.na(cpn_removed_clusters[1]))
-    {
-      snv_clusters_removed <- c(snv_clusters_removed,table(sample_pyclone_tree$ccf_table_pyclone[,'PycloneCluster'])[cpn_removed_clusters])
-    }
-
-    tmp <- legend('topright', inset = c(-0.3, 0), legend = paste(names(snv_clusters), ' (', snv_clusters,' SNVs)', sep = ''), col = vcol[names(snv_clusters)], pch = 19, title = 'Clusters included:', bty = 'n')  ## inset option controls how far from x and y margins
-    if (length(snv_clusters_removed) > 0) {
-      if(!is.na(cpn_removed_clusters[1]))
-      {
-        to_plot <- table(sample_pyclone_tree$ccf_table_pyclone[,'PycloneCluster'])[cpn_removed_clusters]
-        legend(x=tmp$rect$left,y = 0,inset = c(-0.3, 0),legend = paste(names(to_plot), ' (', to_plot, ' SNVs)', sep = ''), col = vcol[names(to_plot)], pch = 19, title = 'Copy# clusters removed:', bty = 'n')
-
-      }
-      legend('bottomright', inset = c(-0.3, 0), legend = paste(names(snv_clusters_removed), ' (', snv_clusters_removed, ' SNVs)', sep = ''), col = vcol[names(snv_clusters_removed)], pch = 19, title = 'Clusters removed:', bty = 'n')
-    }
+  plot(g
+    , layout = l
+    , main = sampleID
+    , vertex.color = vcol[indx]
+    , vertex.frame.color = vcol[indx]
+    , vertex.shape = node.shape
+    , vertex.lwd = 5
+    , vertex.pie.lwd = 3
+    , vertex.pie = pie.slices
+    , vertex.pie.color = lapply(pie.colors, rev)
+    , vertex.size = node.size
+    , edge.color = ecol
+    , edge.size = ewidth
+    , vertex.label.cex = 2
+    , vertex.label.pos = 2
+    , vertex.label.dist = 0
+    , vertex.label.family = 'Helvetica'
+    , vertex.label.font = 2
+    , vertex.label.color = 'black')
 
 
+  legend.pie(1, 1, labels = gsub(paste0(substr(colnames(tmp)[1], 1, 8), "_"), "", colnames(tmp)), radius = 0.2, bty = "n", col = '#bdbdbd',
+             cex = 1.25, label.dist = 0.8
+    , border = 'white')
 
+  snv_clusters <- sort(pyclone_tree$edgelength[indx], decreasing = T)
 
+  snv_clusters_removed <- pyclone_tree$edgelength
+  snv_clusters_removed <- sort(snv_clusters_removed[!names(snv_clusters_removed) %in% indx], decreasing = T)
+  if (!is.na(cpn_removed_clusters[1]))
+  {
+    snv_clusters_removed <- c(snv_clusters_removed, table(sample_pyclone_tree$ccf_table_pyclone[, 'PycloneCluster'])[cpn_removed_clusters])
   }
+
+  tmp <- legend('topright', inset = c(-0.3, 0), legend = paste(names(snv_clusters), ' (', snv_clusters, ' SNVs)', sep = ''), col = vcol[names(snv_clusters)], pch = 19, title = 'Clusters included:', bty = 'n')  ## inset option controls how far from x and y margins
+  if (length(snv_clusters_removed) > 0) {
+    if (!is.na(cpn_removed_clusters[1]))
+    {
+      to_plot <- table(sample_pyclone_tree$ccf_table_pyclone[, 'PycloneCluster'])[cpn_removed_clusters]
+      legend(x = tmp$rect$left, y = 0, inset = c(-0.3, 0), legend = paste(names(to_plot), ' (', to_plot, ' SNVs)', sep = ''), col = vcol[names(to_plot)], pch = 19, title = 'Copy# clusters removed:', bty = 'n')
+
+    }
+    legend('bottomright', inset = c(-0.3, 0), legend = paste(names(snv_clusters_removed), ' (', snv_clusters_removed, ' SNVs)', sep = ''), col = vcol[names(snv_clusters_removed)], pch = 19, title = 'Clusters removed:', bty = 'n')
+  }
+
+
+}
   dev.off()
 
   #next, plot all the possible trees
+  cat('/Plotting alternative trees\n')
   trees.to.plot <- pyclone_tree$alt_trees
-  if(length(trees.to.plot)==0)
+  nr.trees <- length(trees.to.plot)
+  if (nr.trees == 0)
   {
     #nothing to plot here.
   }
-  if(length(trees.to.plot)!=0)
+  if (nr.trees != 0)
   {
+    if (max_alt_trees > 0 && nr.trees > max_alt_trees) {
+      cat(paste0('\nThe number of alternative trees is ', toString(nr.trees), '. Limiting the number of trees in the plot to ', toString(max_alt_trees), '.\n'))
+      nr.trees <- max_alt_trees
+    }
 
     date <- gsub('-', '', substr(Sys.time(), 1, 10))
 
     pdfname <- file.path(generalSave, 'pytree_multipletrees.pdf')
 
-    mult.factor <- ceiling(length(trees.to.plot)/50)
+    mult.factor <- ceiling(nr.trees / 50)
 
-    pdf(pdfname, width=12*mult.factor, height=12*mult.factor)
+    pdf(pdfname, width = 12 * mult.factor, height = 12 * mult.factor)
+  {
+    columnnum <- 1
+    rownum <- nr.trees / columnnum
+
+    if (nr.trees <= 50)
     {
-      nr.trees              <- length(trees.to.plot)
-      columnnum             <- 1
-      rownum                <- nr.trees/columnnum
+      nr.to.use <- nr.trees
+    }
 
-      if(nr.trees<=50)
-      {
-        nr.to.use <- nr.trees
-      }
+    if (nr.trees > 50)
+    {
+      nr.to.use <- signif(nr.trees + 5, 2)
+    }
 
-      if(nr.trees>50)
-      {
-        nr.to.use <- signif(nr.trees+5,2)
-      }
-
-      for(i in 1: nr.to.use) {
-        if((nr.to.use %% i) == 0) {
-          if((i+(nr.to.use/i))<(columnnum+rownum))
-          {
-            columnnum <- i
-            rownum    <- nr.to.use/columnnum
-          }
+    for (i in 1:nr.to.use) {
+      if ((nr.to.use %% i) == 0) {
+        if ((i + (nr.to.use / i)) < (columnnum + rownum))
+        {
+          columnnum <- i
+          rownum <- nr.to.use / columnnum
         }
       }
+    }
 
-      if(columnnum==1)
-      {
-        columnnum <- ceiling(columnnum*2)
-        rownum    <- ceiling(rownum/2)
-      }
+    if (columnnum == 1)
+    {
+      columnnum <- ceiling(columnnum * 2)
+      rownum <- ceiling(rownum / 2)
+    }
 
-      par(mfrow=c(rownum,columnnum),xpd=TRUE,mar=c(1, 1,1, 1))
-      for (i in 1:nr.trees)
-      {
-        auto_tree    <- trees.to.plot[[i]]
-        g <- graph.data.frame(auto_tree,directed = FALSE)
-        indx <- V(g)$name
-        vcol <- setNames(color.tree(pyclone_tree$edgelength), names(pyclone_tree$edgelength))[indx]
+    par(mfrow = c(rownum, columnnum), xpd = TRUE, mar = c(1, 1, 1, 1))
+    for (i in 1:nr.trees)
+    {
+      auto_tree <- trees.to.plot[[i]]
+      g <- graph.data.frame(auto_tree, directed = FALSE)
+      indx <- V(g)$name
+      vcol <- setNames(color.tree(pyclone_tree$edgelength), names(pyclone_tree$edgelength))[indx]
 
-        l <- layout_as_tree(g, root = pyclone_tree$trunk)
+      l <- layout_as_tree(g, root = pyclone_tree$trunk)
 
-        pie.size <- ncol(nested_pyclone$ccf_cluster_table)
-        node.shape <- setNames(rep('pie', length(vcol)), names(vcol))
-        pie.slices <- lapply(1:length(vcol), function(x) rep(1, pie.size))
-        empty.col = 'gray85'
+      pie.size <- ncol(nested_pyclone$ccf_cluster_table)
+      node.shape <- setNames(rep('pie', length(vcol)), names(vcol))
+      pie.slices <- lapply(1:length(vcol), function(x) rep(1, pie.size))
+      empty.col = 'gray85'
 
-        node_size_factor <- log2(max(pyclone_tree$edgelength)) / 30
-        node.size <- log2(pyclone_tree$edgelength) / node_size_factor
-        node.size <- node.size[names(node.shape)]
+      node_size_factor <- log2(max(pyclone_tree$edgelength)) / 30
+      node.size <- log2(pyclone_tree$edgelength) / node_size_factor
+      node.size <- node.size[names(node.shape)]
 
-        pie.colors <- nested_pyclone$ccf_cluster_table[match(names(vcol), rownames(nested_pyclone$ccf_cluster_table)),, drop = F]
-        pie.colors <- lapply(1:nrow(pie.colors), function(x) {
-          if(!all(is.na(pie.colors[x,]))){
-            tmp <- pie.colors[x,]
-            tmp[tmp > 0] <- vcol[rownames(pie.colors)[x]]
-            tmp[tmp == 0] <- empty.col
-            tmp
-          }
-        })
+      pie.colors <- nested_pyclone$ccf_cluster_table[match(names(vcol), rownames(nested_pyclone$ccf_cluster_table)), , drop = F]
+      pie.colors <- lapply(1:nrow(pie.colors), function(x) {
+        if (!all(is.na(pie.colors[x,]))) {
+          tmp <- pie.colors[x,]
+          tmp[tmp > 0] <- vcol[rownames(pie.colors)[x]]
+          tmp[tmp == 0] <- empty.col
+          tmp
+        }
+      })
 
-        g_dir <- graph.data.frame(auto_tree,directed = TRUE)
-        edges <- get.edgelist(g_dir)
-        ecol <- setNames(rep('#bdbdbd', nrow(edges)),edges[,2])# baseline, set edge color to black
-        ewidth <- rep(1,length(ecol))
+      g_dir <- graph.data.frame(auto_tree, directed = TRUE)
+      edges <- get.edgelist(g_dir)
+      ecol <- setNames(rep('#bdbdbd', nrow(edges)), edges[, 2]) # baseline, set edge color to black
+      ewidth <- rep(1, length(ecol))
 
-        #label consensus edges in other colour
-        ecol[paste(edges[,1],edges[,2],sep=":")%in%pyclone_tree$consensus_branches] <- '#000000'
-        ewidth[paste(edges[,1],edges[,2],sep=":")%in%pyclone_tree$consensus_branches] <- 2
+      #label consensus edges in other colour
+      ecol[paste(edges[, 1], edges[, 2], sep = ":") %in% pyclone_tree$consensus_branches] <- '#000000'
+      ewidth[paste(edges[, 1], edges[, 2], sep = ":") %in% pyclone_tree$consensus_branches] <- 2
 
-        plot(g, main = sampleID
-             , layout = l
-             , vertex.color = vcol[indx]
-             , vertex.shape = node.shape
-             , vertex.pie = pie.slices
-             , vertex.pie.color = pie.colors
-             , vertex.pie.lty = 0
-             , vertex.size = node.size
-             , edge.width =ewidth
-             , edge.color=ecol
-             , arrow.size =0
-             ,arrow.width=0
-             ,arrow.mode=0
-        )
-
-      }
+      plot(g, main = sampleID
+        , layout = l
+        , vertex.color = vcol[indx]
+        , vertex.shape = node.shape
+        , vertex.pie = pie.slices
+        , vertex.pie.color = pie.colors
+        , vertex.pie.lty = 0
+        , vertex.size = node.size
+        , edge.width = ewidth
+        , edge.color = ecol
+        , arrow.size = 0
+        , arrow.width = 0
+        , arrow.mode = 0
+      )
 
     }
+
+  }
     dev.off()
   }
 }

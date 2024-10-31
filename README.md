@@ -23,7 +23,7 @@ devtools::install_github("stefmldk/CONIPHER_C")
 Skip updates by pressing enter when prompted.
 Exit out of R by running q() and choose n when asked to save the workspace image.
 
-The environment is now ready to run CONIPHER_C with custom colors.
+The environment is now ready to run CCCONIPHER with custom colors.
 
 ---
 ## Quick start

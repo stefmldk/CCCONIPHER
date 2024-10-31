@@ -40,9 +40,9 @@ Rscript folder_of_your_choice/run_conipher.R \
         --nProcs number_of_threads \
         --custom_colors "#1f78b4,#b2df8a,#33a02c,#fb9a99,#e31a1c"
 ```
-If the custom_colors argument is left out, the output should correspond to the original CONIPHER. Note: due to '#' having a special meaning in bash, the colors list must be in hyphens.
+If the custom_colors argument is left out, the output should correspond to the forked CONIPHER. Note: due to '#' having a special meaning in bash, the colors list must be in quotes.
 
-Please format the input tsv as in the example below and only include nummeric chromosomes (exclude X, Y, M plus unassembled contigs):
+Please format the input tsv as in the example below and only include autosomes with a number (ommit 'chr' prefix in chromosome names and exclude X, Y, M plus unassembled contigs):
 ```
 CASE_ID	SAMPLE	CHR	POS	REF	ALT	REF_COUNT	VAR_COUNT	DEPTH	COPY_NUMBER_A	COPY_NUMBER_B	ACF	PLOIDY
 G74E	G74E_4	1	9737534	C	A	27	0	27	2	0	0.57	3.8

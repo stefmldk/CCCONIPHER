@@ -1,7 +1,9 @@
 # Custom-colors CONIPHER
 
 ## CONIPHER mutation clustering and phylogenetic tree building R package
-This is a fork of the official CONIPHER repository that can be found at [https://github.com/McGranahanLab/CONIPHER](https://github.com/McGranahanLab/CONIPHER). In this version one has the ability to define custom cluster colors in the initial function call. This is usefull if you require other plots in your project than the ones CONIPHER produces and you wish to unify the colors for easier comparison.
+This is a fork of the official CONIPHER repository that can be found at [https://github.com/McGranahanLab/CONIPHER](https://github.com/McGranahanLab/CONIPHER).
+
+In this version one has the ability to define custom cluster colors in the initial function call. This is usefull if you require other plots in your project than the ones CONIPHER produces and you wish to unify the colors for easier comparison.
 
 In addition, it is possible to limit the number of plotted alternative trees: This number may grow into the thousands in cases where many clones are found resulting in a very large and likely unusable pdf output. Limiting this number allows the user to at least get at quick overview of the first alternative trees in the set of alternative trees.
 

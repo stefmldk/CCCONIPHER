@@ -1,7 +1,7 @@
 # Custom-colors CONIPHER
 
 ## CONIPHER mutation clustering and phylogenetic tree building R package
-This is a fork of the official CONIPHER repository that can be found at [https://github.com/McGranahanLab/CONIPHER](https://github.com/McGranahanLab/CONIPHER). The only changes that has been made to this version is the ability to define custom cluster colors in the initial function call. This is usefull if you require other plots in your project than the ones CONIPHER produces and you wish to unify the colors for easier comparison.
+This is a fork of the official CONIPHER repository that can be found at [https://github.com/McGranahanLab/CONIPHER](https://github.com/McGranahanLab/CONIPHER). In this version one has the ability to define custom cluster colors in the initial function call. This is usefull if you require other plots in your project than the ones CONIPHER produces and you wish to unify the colors for easier comparison. In addition, it is possible to limit the number of plotted alternative trees: This number may grow into the thousands in cases where many clones are found resulting in a very large and likely unusable pdf output. Limiting this number allows the user to at least get at quick overview of the first alternative trees in the set of alternative trees.
 
 ### Software
 The current implementation of CONIPHER is written in `R>=3.6.1` and is distributed as an R package.
@@ -38,9 +38,10 @@ Rscript folder_of_your_choice/run_conipher.R \
         --out_dir output_folder \
         --input_tsv_loc conipher_input_tsv \
         --nProcs number_of_threads \
-        --custom_colors "#1f78b4,#b2df8a,#33a02c,#fb9a99,#e31a1c"
+        --custom_colors "#1f78b4,#b2df8a,#33a02c,#fb9a99,#e31a1c" \
+        --max_alt_trees 9
 ```
-If the custom_colors argument is left out, the output should correspond to the forked CONIPHER. Note: Colors must be provided as hexadecimal. Due to '#' having a special meaning in bash, the colors list must be in quotes.
+If the custom_colors and/or max_alt_trees arguments are left out, the output should correspond to the forked CONIPHER. Note: Colors must be provided as hexadecimal. Due to '#' having a special meaning in bash, the colors list must be in quotes.
 
 Please format the input tsv as in the example below where copy numbers A and B correspond to major and minor and only include autosomes with a number (ommit 'chr' prefix in chromosome names and exclude X, Y, M plus unassembled contigs):
 ```

@@ -3,7 +3,7 @@
 ## CONIPHER mutation clustering and phylogenetic tree building R package
 This is a fork of the official CONIPHER repository that can be found at [https://github.com/McGranahanLab/CONIPHER](https://github.com/McGranahanLab/CONIPHER).
 
-In this version one has the ability to define custom cluster colors in the initial function call. This is usefull if you require other plots in your project than the ones CONIPHER produces and you wish to unify the colors for easier comparison.
+In this version, one has the ability to define custom cluster colors in the initial function call. This is usefull if you require other plots in your project than the ones CONIPHER produces and you wish to unify the colors for easier comparison.
 
 In addition, it is possible to limit the number of plotted alternative trees: This number may grow into the thousands in cases where many clones are found resulting in a very large and likely unusable pdf output. Limiting this number allows the user to at least get at quick overview of the first alternative trees in the set of alternative trees.
 
@@ -61,7 +61,9 @@ G74E	G74E_6	1	11531040	G	T	47	0	47	2	0	0.56	3.8
 ---
 ### Anticipated results
 The clustering output will include the following output files (examples are in "conipher_results/Clustering"):
-
+- <CASE_ID>_pyclone_cluster_assignment_ccf_clean.pdf
+- <CASE_ID>_pyclone_cluster_assignment_copynumber_clean.pdf
+- <CASE_ID>_pyclone_cluster_assignment_mutCpn_clean.pdf
 
 The tree building output will include 3 output files (examples are in "conipher_results/Trees"):
 - <CASE_ID>.tree.RDS: an R list object containing tree building output information

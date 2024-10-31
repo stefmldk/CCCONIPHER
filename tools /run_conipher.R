@@ -72,10 +72,10 @@ option_list <- list(
     make_option("--max_alt_trees", type = "integer", default = 0, help = "Maximum number of alternative trees to plot. Disregarded if zero", metavar = "character")
 )
 
-
 opt_parser <- OptionParser(option_list = option_list)
 opt        <- parse_args(opt_parser)
 
+colors <- NULL
 if (length(opt$custom_colors) > 0) {
   colors <- unlist(strsplit(opt$custom_colors, ","))
 }

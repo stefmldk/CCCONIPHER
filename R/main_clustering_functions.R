@@ -464,7 +464,7 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
   patient <- input_list$patient
 
   ITH1clust <- names(which(sapply(simpleClusterList, function(x) length(x$RegionsInCluster)) == length(phylo.region.list)))
-  ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
+  ITH1muts <- simpleClusterList[[as.character(unlist(ITH1clust))]]$MutationsWithCluster
 
   pyclone.results <- read.table(sample.results, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
 

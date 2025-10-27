@@ -468,7 +468,7 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
 
   # SMB bugfix - see also line 910
   if (identical(ITH1clust, character(0))) {
-    ITH1muts <- 0
+    ITH1muts <- c()
   }
   else {
     ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
@@ -909,12 +909,11 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
     ### merge clusters present in all regions at given thresholds
     print("Final merging of ubiqquitous clusters")
     ### select ubiquitous mutations in clean clusters
-    if (ITH1muts) {
-      issue_mutations <- output_tsv %>%
-        dplyr::mutate(mutation_id = paste(CASE_ID, CHR, POS, REF, sep = ":")) %>%
-        dplyr::filter(CLEAN, mutation_id %in% ITH1muts)
-    }
-    if (ITH1muts == 0 | nrow(issue_mutations) == 0) {
+    issue_mutations <- output_tsv %>%
+      dplyr::mutate(mutation_id = paste(CASE_ID, CHR, POS, REF, sep = ":")) %>%
+      dplyr::filter(CLEAN, mutation_id %in% ITH1muts)
+  
+    if (nrow(issue_mutations) == 0) {
       print("No additional clusters corrected")
     } else {
       clusters_to_consider <- unique(issue_mutations$CLUSTER)

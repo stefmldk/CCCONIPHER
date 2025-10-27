@@ -462,19 +462,17 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
   regions.to.use <- input_list$regions.to.use
   simpleClusterList <- input_list$simpleClusterList
   patient <- input_list$patient
-
-  print('###simpleClusterList:')
-  print(simpleClusterList)
-
-  print('###phylo.region.list:')
-  print(phylo.region.list)
   
-  # Get 
+  # SMB: RegionsInCluster denotes a list of the samples that are in the cluster (samples containing the variants defining the cluster) 
   ITH1clust <- names(which(sapply(simpleClusterList, function(x) length(x$RegionsInCluster)) == length(phylo.region.list)))
 
-  print('###ITH1clust:')
-  print(ITH1clust)
-  ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
+  # SMB bugfix - see also line 904
+  if (ITH1clust) {
+    ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
+  }
+  else {
+    ITH1muts <- 0
+  }
 
   pyclone.results <- read.table(sample.results, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
 
@@ -903,10 +901,12 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
     ### merge clusters present in all regions at given thresholds
     print("Final merging of ubiqquitous clusters")
     ### select ubiquitous mutations in clean clusters
-    issue_mutations <- output_tsv %>%
-      dplyr::mutate(mutation_id = paste(CASE_ID, CHR, POS, REF, sep = ":")) %>%
-      dplyr::filter(CLEAN, mutation_id %in% ITH1muts)
-    if (nrow(issue_mutations) == 0) {
+    if (ITH1muts) {
+      issue_mutations <- output_tsv %>%
+        dplyr::mutate(mutation_id = paste(CASE_ID, CHR, POS, REF, sep = ":")) %>%
+        dplyr::filter(CLEAN, mutation_id %in% ITH1muts)
+    }
+    if (ITH1muts == 0 | nrow(issue_mutations) == 0) {
       print("No additional clusters corrected")
     } else {
       clusters_to_consider <- unique(issue_mutations$CLUSTER)

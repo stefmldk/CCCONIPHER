@@ -467,18 +467,20 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
   ITH1clust <- names(which(sapply(simpleClusterList, function(x) length(x$RegionsInCluster)) == length(phylo.region.list)))
 
   # SMB bugfix - see also line 910
-  if (is.null(ITH1clust)) {
-    ITH1muts <- 0
-  }
-  else {
-    ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
-  }
-  #if (length(ITH1clust) > 0) {
-    #ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
-  #}
-  #else {
+  #if (is.null(ITH1clust)) {
     #ITH1muts <- 0
   #}
+  #else {
+    #ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
+  #}
+  print('ITH1clust is:')
+  print(ITH1clust)
+  if (ITH1clust > 0) {
+    ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
+  }
+  else {
+    ITH1muts <- 0
+  }
 
   pyclone.results <- read.table(sample.results, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
 

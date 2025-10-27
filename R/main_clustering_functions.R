@@ -463,6 +463,13 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
   simpleClusterList <- input_list$simpleClusterList
   patient <- input_list$patient
 
+  print('###simpleClusterList:')
+  print(simpleClusterList)
+
+  print('###phylo.region.list:')
+  print(phylo.region.list)
+  
+  # Get 
   ITH1clust <- names(which(sapply(simpleClusterList, function(x) length(x$RegionsInCluster)) == length(phylo.region.list)))
 
   print('###ITH1clust:')

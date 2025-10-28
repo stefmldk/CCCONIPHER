@@ -473,14 +473,6 @@ clustering_postprocess <- function(input_list, sample.results, new.dir, input_ts
   else {
     ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
   }
-  #print('ITH1clust is:')
-  #print(ITH1clust)
-  #if (ITH1clust > 0) {
-    #ITH1muts <- simpleClusterList[[as.character(ITH1clust)]]$MutationsWithCluster
-  #}
-  #else {
-    #ITH1muts <- 0
-  #}
 
   pyclone.results <- read.table(sample.results, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
 

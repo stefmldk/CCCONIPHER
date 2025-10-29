@@ -937,6 +937,12 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
       print(nesting.removed)
       print('### keycluster')
       print(keycluster)
+      print('### cluster1')
+      print(cluster1)
+      print('### nestedclust_test[keycluster,]')
+      print(nestedclust_test[keycluster,])
+      print('### nestedclust_test[keycluster,] == 1')
+      print(nestedclust_test[keycluster,] == 1)
       print('### nesting.to.keep')
       print(nesting.to.keep)
       nesting.to.keep <- nesting.to.keep[paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":") %in% paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":"),]

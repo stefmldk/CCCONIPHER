@@ -947,10 +947,19 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
       print(nesting.to.keep)
       nesting.to.keep <- nesting.to.keep[paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":") %in% paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":"),]
 
-
+      print('### nesting.to.keep[paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":")')
+      print(nesting.to.keep[paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":"))
+      print('### cluster1')
+      print(cluster1)
+            
       new.tree <- new.tree[!paste(new.tree[, 1], new.tree[, 2], sep = ":") %in% nesting.removed, , drop = FALSE]
 
+      print('### new.tree')
+      print(new.tree)
       new.tree <- rbind(new.tree, nesting.to.keep)
+
+      print('### new.tree')
+      print(new.tree)
 
 
       rownames(new.tree) <- 1:nrow(new.tree)

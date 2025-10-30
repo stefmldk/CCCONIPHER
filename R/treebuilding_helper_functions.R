@@ -945,6 +945,11 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
       print(nestedclust_test[keycluster,] == 1)
       print('### nesting.to.keep')
       print(nesting.to.keep)
+
+      print('### paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":")')
+      print(paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":"))
+      print('### paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":")')
+      print(paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":"))                     
       nesting.to.keep <- nesting.to.keep[paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":") %in% paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":"),]
 
       
@@ -955,7 +960,7 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
             
       new.tree <- new.tree[!paste(new.tree[, 1], new.tree[, 2], sep = ":") %in% nesting.removed, , drop = FALSE]
 
-      print('### new.tree')
+      print('### new.tree before rbind')
       print(new.tree)
       new.tree <- rbind(new.tree, nesting.to.keep)
 
@@ -967,11 +972,20 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
       new.tree <- prune.tree_test(edgelist_full = new.tree
         , nestedclust = nestedclust_test
         , trunk_cluster = trunk_cluster)
+
+      print('### new.tree after prune')
+      print(new.tree)
+      
       new.tree <- new.tree[!duplicated(paste(new.tree[, 1], new.tree[, 2], sep = ":")), , drop = FALSE]
+      print('### new.tree after not duplicated')
+      print(new.tree)
       new.tree.graph <- graph.data.frame(new.tree)
       plot(new.tree.graph, layout = layout.reingold.tilford(new.tree.graph, root = trunk_cluster))
 
       new.tree <- new.tree[!duplicated(new.tree[, 2]), , drop = FALSE]
+
+      print('### new.tree after duplicate')
+      print(new.tree)
 
 
       #now, let's explore the tree associated with this.

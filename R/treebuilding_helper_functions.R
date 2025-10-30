@@ -834,8 +834,21 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
   ccf_cluster_table <- nestedlist[[4]]
   cluster_qc <- nestedlist[[5]]
 
+  print('### nestedclust')
+  print(nestedclust)
+
+  print('### graph_pyclone')
+  print(graph_pyclone)
+
+  print('### nestedclust')
+  print(nestedclust)
+
   nestedclust <- nestedclust[, colnames(nestedclust) %in% unique(c(graph_pyclone$default_tree)), drop = FALSE]
+  print('### nestedclust new colnames')
+  print(nestedclust)
   nestedclust <- nestedclust[rownames(nestedclust) %in% unique(c(graph_pyclone$default_tree)), , drop = FALSE]
+  print('### nestedclust new row names')
+  print(nestedclust)
 
   trunk_cluster <- graph_pyclone$trunk
   max_per_level <- max(max(ccf_ci_upper[trunk_cluster,]) + ccf_buffer, 100 + ccf_buffer)
@@ -905,8 +918,14 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
 
     # make sure all is in the tree
     nestedclust_full <- nestedclust
+    print('### nestedclust')
+    print(nestedclust)
     nestedclust_full[cluster,] <- 0
+    print('### nestedclust_full ****************')
+    print(nestedclust_full)
     nestedclust_full[cluster, expanded_tree[expanded_tree[, 2] == cluster, 1]] <- 1
+    print('### nestedclust_full with 1s ****************')
+    print(nestedclust_full)
     keycluster <- cluster
     old.tree <- graph_pyclone$default_tree
 

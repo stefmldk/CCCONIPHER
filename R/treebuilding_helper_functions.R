@@ -833,7 +833,6 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
   ccf_ci_upper <- nestedlist[[3]]
   ccf_cluster_table <- nestedlist[[4]]
   cluster_qc <- nestedlist[[5]]
-  browser()
 
   print('#SMB nestedlist')
   print(nestedlist)

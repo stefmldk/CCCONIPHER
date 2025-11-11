@@ -834,11 +834,11 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
   ccf_cluster_table <- nestedlist[[4]]
   cluster_qc <- nestedlist[[5]]
 
-  print('#SMB nestedlist')
-  print(nestedlist)
+  # print('#SMB nestedlist')
+  # print(nestedlist)
 
-  print('#SMB graph_pyclone')
-  print(graph_pyclone)
+  # print('#SMB graph_pyclone')
+  # print(graph_pyclone)
   
 
   nestedclust <- nestedclust[, colnames(nestedclust) %in% unique(c(graph_pyclone$default_tree)), drop = FALSE]
@@ -850,14 +850,14 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
   non_trunk_clusters <- c(graph_pyclone$default_tree)[!c(graph_pyclone$default_tree) %in% trunk_cluster]
   non_trunk_clusters <- unique(non_trunk_clusters[order(as.numeric(non_trunk_clusters), decreasing = FALSE)])
 
-  print('#SMB nestedclust')
-  print(nestedclust)
+  # print('#SMB nestedclust')
+  # print(nestedclust)
 
   # for altering the tree (I don't include the CCF allowance)
   strict_nestedclust <- update.nested.cluster(nestedclust, ccf_ci_lower = ccf_ci_lower, max_per_level = max(ccf_ci_upper[trunk_cluster,]), trunk_cluster)
 
-  print('#SMB strict_nestedclust')
-  print(strict_nestedclust)
+  # print('#SMB strict_nestedclust')
+  # print(strict_nestedclust)
 
   #check which clusters could be changed potentially
   clusters_with_potential_to_move <- c()
@@ -871,8 +871,8 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
 
   }
 
-  print('#SMB clusters_with_potential_to_move')
-  print(clusters_with_potential_to_move)
+  # print('#SMB clusters_with_potential_to_move')
+  # print(clusters_with_potential_to_move)
 
   if (length(clusters_with_potential_to_move) == 0)
   {
@@ -921,14 +921,8 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
 
     # make sure all is in the tree
     nestedclust_full <- nestedclust
-    #print('### nestedclust')
-    #print(nestedclust)
     nestedclust_full[cluster,] <- 0
-    #print('### nestedclust_full ****************')
-    #print(nestedclust_full)
     nestedclust_full[cluster, expanded_tree[expanded_tree[, 2] == cluster, 1]] <- 1
-    #print('### nestedclust_full with 1s ****************')
-    #print(nestedclust_full)
     keycluster <- cluster
     old.tree <- graph_pyclone$default_tree
 
@@ -939,82 +933,34 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
       previous.tree <- old.tree
       old.tree.expanded <- expand.tree(previous.tree, trunk_cluster)
 
-      #print('')
-      #print('### previous.tree')
-      #print(previous.tree)
-      #print('### old.tree.expanded')
-      #print(old.tree.expanded)
-
       new.tree <- old.tree
       nestedclust_test <- nestedclust
       nestedclust_test[keycluster, cluster1] <- 0
       nesting.removed <- paste(cluster1, keycluster, sep = ":")
       nesting.to.keep <- cbind(colnames(nestedclust_test)[nestedclust_test[keycluster,] == 1], keycluster)
-      #print('')
-      #print('### nestedclust')
-      #print(nestedclust)
-      #print('### nestedclust_test')
-      #print(nestedclust)
-      #print('### nesting.removed')
-      #print(nesting.removed)
-      #print('### keycluster')
-      #print(keycluster)
-      #print('### cluster1')
-      #print(cluster1)
-      #print('### nestedclust_test[keycluster,]')
-      #print(nestedclust_test[keycluster,])
-      #print('### nestedclust_test[keycluster,] == 1')
-      #print(nestedclust_test[keycluster,] == 1)
-      #print('### nesting.to.keep')
-      #print(nesting.to.keep)
-
-      #print('### paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":")')
-      #print(paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":"))
-      #print('### paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":")')
-      #print(paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":"))
 
       # SMB attempted bugfix
-      if (ncol(nesting.to.keep) < 2) {
-        next
-      }
+      # if (ncol(nesting.to.keep) < 2) {
+      #   next
+      # }
         
       nesting.to.keep <- nesting.to.keep[paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":") %in% paste(old.tree.expanded[, 1], old.tree.expanded[, 2], sep = ":"),]
-
-      
-      #print('### paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":")')
-      #print(paste(nesting.to.keep[, 1], nesting.to.keep[, 2], sep = ":"))
-      #print('### cluster1')
-      #print(cluster1)
             
       new.tree <- new.tree[!paste(new.tree[, 1], new.tree[, 2], sep = ":") %in% nesting.removed, , drop = FALSE]
 
-      #print('### new.tree before rbind')
-      #print(new.tree)
       new.tree <- rbind(new.tree, nesting.to.keep)
-
-      #print('### new.tree')
-      #print(new.tree)
-
 
       rownames(new.tree) <- 1:nrow(new.tree)
       new.tree <- prune.tree_test(edgelist_full = new.tree
         , nestedclust = nestedclust_test
         , trunk_cluster = trunk_cluster)
 
-      #print('### new.tree after prune')
-      #print(new.tree)
-      
       new.tree <- new.tree[!duplicated(paste(new.tree[, 1], new.tree[, 2], sep = ":")), , drop = FALSE]
-      #print('### new.tree after not duplicated')
-      #print(new.tree)
+      
       new.tree.graph <- graph.data.frame(new.tree)
       plot(new.tree.graph, layout = layout.reingold.tilford(new.tree.graph, root = trunk_cluster))
 
       new.tree <- new.tree[!duplicated(new.tree[, 2]), , drop = FALSE]
-
-      #print('### new.tree after duplicate')
-      #print(new.tree)
-
 
       #now, let's explore the tree associated with this.
       tlevels <- check.levels.ccf(new.tree, ccf_ci_lower, trunk_cluster)

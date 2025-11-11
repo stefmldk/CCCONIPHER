@@ -835,21 +835,15 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
   cluster_qc <- nestedlist[[5]]
   browser()
 
-  #print('### nestedclust')
-  #print(nestedclust)
+  print('#SMB nestedlist')
+  print(nestedlist)
 
-  #print('### graph_pyclone')
-  #print(graph_pyclone)
-
-  #print('### nestedclust')
-  #print(nestedclust)
+  print('#SMB graph_pyclone')
+  print(graph_pyclone)
+  
 
   nestedclust <- nestedclust[, colnames(nestedclust) %in% unique(c(graph_pyclone$default_tree)), drop = FALSE]
-  #print('### nestedclust new colnames')
-  #print(nestedclust)
   nestedclust <- nestedclust[rownames(nestedclust) %in% unique(c(graph_pyclone$default_tree)), , drop = FALSE]
-  #print('### nestedclust new row names')
-  #print(nestedclust)
 
   trunk_cluster <- graph_pyclone$trunk
   max_per_level <- max(max(ccf_ci_upper[trunk_cluster,]) + ccf_buffer, 100 + ccf_buffer)
@@ -857,8 +851,14 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
   non_trunk_clusters <- c(graph_pyclone$default_tree)[!c(graph_pyclone$default_tree) %in% trunk_cluster]
   non_trunk_clusters <- unique(non_trunk_clusters[order(as.numeric(non_trunk_clusters), decreasing = FALSE)])
 
+  print('#SMB nestedclust')
+  print(nestedclust)
+
   # for altering the tree (I don't include the CCF allowance)
   strict_nestedclust <- update.nested.cluster(nestedclust, ccf_ci_lower = ccf_ci_lower, max_per_level = max(ccf_ci_upper[trunk_cluster,]), trunk_cluster)
+
+  print('#SMB strict_nestedclust')
+  print(strict_nestedclust)
 
   #check which clusters could be changed potentially
   clusters_with_potential_to_move <- c()
@@ -871,6 +871,9 @@ grow.multi.trees <- function(nestedlist, graph_pyclone, pyclone, ccf_buffer = 10
     clusters_with_potential_to_move <- c(clusters_with_potential_to_move, cluster)
 
   }
+
+  print('#SMB clusters_with_potential_to_move')
+  print(clusters_with_potential_to_move)
 
   if (length(clusters_with_potential_to_move) == 0)
   {

@@ -263,8 +263,10 @@ grow.trees <- function(nestedlist
   # identify if there are issues with the tree
   # are there circles #
   directedGraph <- graph.data.frame(directedGraph_input_pruned_unfolded)
-  issue_circles <- girth(directedGraph)$girth != 0
-  issue_circles <- ifelse(issue_circles == TRUE, TRUE, ifelse(max(table(directedGraph_input_pruned_unfolded[, 2])) > 1, TRUE, FALSE))
+  #issue_circles <- girth(directedGraph)$girth != 0
+  issue_circles <- !girth(directedGraph)$girth%in%c(0,Inf)
+
+  issue_circles <- ifelse(issue_circles==TRUE,TRUE,ifelse(max(table(directedGraph_input_pruned_unfolded[,2]))>1,TRUE,FALSE))
   cluster_qc_new <- cluster_qc
   cluster_qc_new[names(table(directedGraph_input_pruned_unfolded[, 2])), 'IncomingEdges'] <- table(directedGraph_input_pruned_unfolded[, 2])
   cluster_qc_new[names(table(directedGraph_input_pruned_unfolded[, 1])), 'OutgoingEdges'] <- table(directedGraph_input_pruned_unfolded[, 1])
@@ -300,21 +302,19 @@ grow.trees <- function(nestedlist
     {
 
 
-      #first, assess whether this can be simply explained by less strict clustering
-      test_cycle <- prune.cycle(edgelist = directedGraph_input_corrected
-        , nestedclust = nestedclust
-        , ccf_ci_lower = ccf_ci_lower
-        , max_per_level = max_per_level
-        , trunk_cluster = trunk_cluster
+     #first, assess whether this can be simply explained by less strict clustering
+      test_cycle  <- prune.cycle(edgelist = directedGraph_input_corrected
+                                 ,nestedclust = nestedclust
+                                 ,ccf_ci_lower = ccf_ci_lower
+                                 ,max_per_level = max_per_level
+                                 ,trunk_cluster = trunk_cluster
       )
       #issue_consistency <- check.internally.consistent(test_cycle$directedGraph_input_pruned_unfolded,tree_full = directedGraph_input,trunk_cluster)
-      if (test_cycle$levelissue %in% FALSE &
-        test_cycle$circle %in% FALSE &
-        test_cycle$consistencyissue %in% FALSE)
+      if(test_cycle$levelissue %in% FALSE & test_cycle$circle %in% FALSE & test_cycle$consistencyissue %in% FALSE)
       {
         #report this now, with the latest case....
         nestedclust_to_use <- test_cycle$nestedcluster
-        skip_next_steps <- TRUE
+        skip_next_steps    <- TRUE
       }
 
       #let's try removing clusters and see if that can solve this issue (would have been good to integrate with above, but we'll do that for another iteration)
